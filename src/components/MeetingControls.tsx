@@ -4,11 +4,10 @@ import { useMeetingStore } from '@/stores/meetingStore';
 import { Play, Square, RotateCcw } from 'lucide-react';
 
 interface MeetingControlsProps {
-  onShowSummary: () => void;
   onNewMeeting?: () => void;
 }
 
-export const MeetingControls = ({ onShowSummary, onNewMeeting }: MeetingControlsProps) => {
+export const MeetingControls = ({ onNewMeeting }: MeetingControlsProps) => {
   const {
     meetingState,
     startMeeting,

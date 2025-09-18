@@ -17,7 +17,6 @@ import {
   Search,
   SortAsc,
   SortDesc,
-  Filter,
   BarChart3,
   TrendingUp,
   Download,
@@ -52,13 +51,6 @@ export default function HistoryPage() {
     });
   };
 
-  const formatDateShort = (date: Date) => {
-    return new Date(date).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
 
   // Filter meetings based on search term
   const filteredMeetings = allMeetings.filter(meeting => {
@@ -173,7 +165,7 @@ export default function HistoryPage() {
           meetings: importedData.historicalMeetings?.length || 0,
           participants: importedData.participants?.length || 0
         }));
-      } catch (error) {
+      } catch {
         alert(t('import.invalidJson'));
       }
     };
@@ -194,7 +186,7 @@ export default function HistoryPage() {
               className="flex items-center gap-2 bg-yellow-500 text-black px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
             >
               <ArrowLeft size={20} />
-              Retour à l'historique
+              Retour à l&apos;historique
             </button>
           </div>
 
@@ -333,7 +325,7 @@ export default function HistoryPage() {
                               {!hasSpoken ? (
                                 <>
                                   <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                                  <span className="text-sm text-gray-600">N'a pas parlé</span>
+                                  <span className="text-sm text-gray-600">N&apos;a pas parlé</span>
                                 </>
                               ) : participant.isOvertime ? (
                                 <>
@@ -375,7 +367,7 @@ export default function HistoryPage() {
             className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium"
           >
             <ArrowLeft size={20} />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
         </div>
 
@@ -659,10 +651,9 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
   const totalDuration = meetings.reduce((sum, m) => sum + m.totalDuration, 0);
   const averageDuration = totalDuration / totalMeetings;
 
-  // Find meetings with most/least participants
+  // Find meetings with most participants
   const meetingsByParticipants = [...meetings].sort((a, b) => b.summary.totalParticipants - a.summary.totalParticipants);
   const meetingWithMostParticipants = meetingsByParticipants[0];
-  const meetingWithLeastParticipants = meetingsByParticipants[meetingsByParticipants.length - 1];
 
   // Find longest/shortest meetings
   const meetingsByDuration = [...meetings].sort((a, b) => b.totalDuration - a.totalDuration);

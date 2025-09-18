@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ParticipantForm } from '@/components/ParticipantForm';
 import { ParticipantTable } from '@/components/ParticipantTable';
@@ -8,7 +8,6 @@ import { GlobalTimer } from '@/components/GlobalTimer';
 import { MeetingControls } from '@/components/MeetingControls';
 import { SimpleSpinWheel } from '@/components/SimpleSpinWheel';
 import { SpeakingModal } from '@/components/SpeakingModal';
-import { SummaryModal } from '@/components/SummaryModal';
 import { LiveStats } from '@/components/LiveStats';
 import { MeetingSummary } from '@/components/MeetingSummary';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -19,11 +18,9 @@ import Link from 'next/link';
 export default function Home() {
   const t = useTranslations();
   const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
-  const [showSummary, setShowSummary] = useState(false);
-  const { meetingState, selectNextParticipant, participants } = useMeetingStore();
+  const { meetingState, selectNextParticipant } = useMeetingStore();
 
   const handleParticipantSelected = (participantId: string) => {
-    const participant = participants.find(p => p.id === participantId);
     setSelectedParticipant(participantId);
 
     // Set the current participant in the store so stopSpeaking() works
@@ -50,18 +47,9 @@ export default function Home() {
     }
   };
 
-  const handleShowSummary = () => {
-    setShowSummary(true);
-  };
-
   const handleNewMeeting = () => {
     const { resetMeeting } = useMeetingStore.getState();
     resetMeeting();
-    setShowSummary(false);
-  };
-
-  const handleCloseSummary = () => {
-    setShowSummary(false);
   };
 
   // No longer needed - summary shows directly in page
@@ -108,7 +96,7 @@ export default function Home() {
         {meetingState.isStarted && (
           <div className="bg-white rounded-lg shadow-md p-4 mb-6">
             <div className="flex justify-center">
-              <MeetingControls onShowSummary={handleShowSummary} onNewMeeting={handleNewMeeting} />
+              <MeetingControls onNewMeeting={handleNewMeeting} />
             </div>
           </div>
         )}
@@ -177,7 +165,7 @@ export default function Home() {
                       <SimpleSpinWheel onParticipantSelected={() => {}} />
                       {!meetingState.isStarted && (
                         <div className="mt-6">
-                          <MeetingControls onShowSummary={handleShowSummary} />
+                          <MeetingControls />
                         </div>
                       )}
                     </div>

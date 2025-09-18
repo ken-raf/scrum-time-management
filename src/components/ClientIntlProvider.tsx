@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { NextIntlClientProvider } from 'next-intl';
+import { NextIntlClientProvider, type AbstractIntlMessages } from 'next-intl';
 import { defaultLocale, locales } from '@/i18n/request';
 
 type Locale = typeof locales[number];
@@ -15,7 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 interface ClientIntlProviderProps {
   children: ReactNode;
-  initialMessages: any;
+  initialMessages: AbstractIntlMessages;
   initialLocale?: Locale;
 }
 
@@ -28,7 +28,7 @@ export function ClientIntlProvider({
     // Try to get saved locale from localStorage on client
     if (typeof window !== 'undefined') {
       const savedLocale = localStorage.getItem('locale');
-      if (savedLocale && locales.includes(savedLocale as any)) {
+      if (savedLocale && locales.includes(savedLocale as Locale)) {
         return savedLocale as Locale;
       }
     }
@@ -38,7 +38,7 @@ export function ClientIntlProvider({
     // If saved locale differs from initial, we'll need to load different messages
     if (typeof window !== 'undefined') {
       const savedLocale = localStorage.getItem('locale');
-      if (savedLocale && locales.includes(savedLocale as any) && savedLocale !== initialLocale) {
+      if (savedLocale && locales.includes(savedLocale as Locale) && savedLocale !== initialLocale) {
         // Messages will be loaded in useEffect
         return initialMessages;
       }

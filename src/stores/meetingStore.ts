@@ -155,7 +155,7 @@ export const useMeetingStore = create<MeetingStore>()(
         return selectedParticipant;
       },
 
-      startSpeaking: (participantId: string) => {
+      startSpeaking: () => {
         set(() => ({
           isSpeaking: true,
           currentSpeakingTime: 0,
@@ -215,7 +215,7 @@ export const useMeetingStore = create<MeetingStore>()(
       },
 
       saveMeetingSummary: () => {
-        const { participants, meetingState, globalTimer } = get();
+        const { participants, globalTimer } = get();
         const presentParticipants = participants.filter(p => p.isPresent);
 
         const summary: MeetingSummary = {

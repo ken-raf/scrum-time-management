@@ -5,7 +5,7 @@ import { formatTime } from '@/utils/time';
 import { Clock, Users, CheckCircle, AlertTriangle, Calendar } from 'lucide-react';
 
 export const MeetingSummary = () => {
-  const { participants, globalTimer, meetingState } = useMeetingStore();
+  const { participants, globalTimer } = useMeetingStore();
 
   const presentParticipants = participants.filter(p => p.isPresent);
   const participantsWithTime = presentParticipants.filter(p => p.actualTime !== undefined);
@@ -151,7 +151,7 @@ export const MeetingSummary = () => {
                         {!hasSpoken ? (
                           <>
                             <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                            <span className="text-sm text-gray-600">N'a pas parlé</span>
+                            <span className="text-sm text-gray-600">N&apos;a pas parlé</span>
                           </>
                         ) : isOvertime ? (
                           <>

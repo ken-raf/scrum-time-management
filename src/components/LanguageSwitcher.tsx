@@ -3,15 +3,15 @@
 import { useTranslations } from 'next-intl';
 import { Globe } from 'lucide-react';
 import { useLanguage } from './ClientIntlProvider';
-import { locales } from '@/i18n/request';
+import { locales, type Locale } from '@/i18n/request';
 
 export const LanguageSwitcher = () => {
   const t = useTranslations('language');
   const { locale, setLocale } = useLanguage();
 
   const switchLanguage = (newLocale: string) => {
-    if (locales.includes(newLocale as any)) {
-      setLocale(newLocale as typeof locales[number]);
+    if (locales.includes(newLocale as Locale)) {
+      setLocale(newLocale as Locale);
     }
   };
 

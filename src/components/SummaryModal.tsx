@@ -11,7 +11,7 @@ interface SummaryModalProps {
 }
 
 export const SummaryModal = ({ isOpen, onClose }: SummaryModalProps) => {
-  const { participants, globalTimer, meetingState } = useMeetingStore();
+  const { participants, globalTimer } = useMeetingStore();
 
   const presentParticipants = participants.filter(p => p.isPresent);
   const participantsWithTime = presentParticipants.filter(p => p.actualTime !== undefined);
@@ -172,7 +172,7 @@ export const SummaryModal = ({ isOpen, onClose }: SummaryModalProps) => {
                                 {!hasSpoken ? (
                                   <>
                                     <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                                    <span className="text-sm text-gray-600">N'a pas parlé</span>
+                                    <span className="text-sm text-gray-600">N&apos;a pas parlé</span>
                                   </>
                                 ) : isOvertime ? (
                                   <>
