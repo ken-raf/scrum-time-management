@@ -1,9 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scrum Time Management
+
+A comprehensive daily scrum time management application designed to help teams efficiently organize speaking time during meetings.
+
+## Features
+
+- **Participant Management**: Add participants with allocated speaking time
+- **Interactive Spin Wheel**: Randomly select speakers for fair participation
+- **Real-time Timer**: Track speaking time with visual feedback and overtime alerts
+- **Meeting History**: View detailed statistics and summaries of past meetings
+- **Multi-language Support**: Available in French and English with persistent language switching
+- **Import/Export**: Save and restore meeting data as JSON files
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
 ## Getting Started
 
-First, run the development server:
+This is a [Next.js](https://nextjs.org) project built with TypeScript and Tailwind CSS.
 
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/ken-raf/scrum-time-management.git
+cd scrum-time-management
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
@@ -14,23 +49,30 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Internationalization**: next-intl
+- **Icons**: Lucide React
+- **Animation**: Framer Motion
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. **Add Participants**: Use the participant form to add team members with their allocated speaking time
+2. **Start Meeting**: Click "Start Meeting" to begin the session
+3. **Spin the Wheel**: Use "Who's turn?" to randomly select the next speaker
+4. **Track Time**: Monitor speaking time with the built-in timer and overtime alerts
+5. **End Meeting**: Finish the meeting to save it to history with detailed statistics
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open source and available under the [MIT License](LICENSE).
