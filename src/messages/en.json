@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Daily Scrum Time Management",
+    "description": "Efficiently organize speaking time for your meeting participants"
+  },
+  "navigation": {
+    "history": "History",
+    "backToHome": "Back to Home"
+  },
+  "meeting": {
+    "startMeeting": "Start Meeting",
+    "endMeeting": "End Meeting",
+    "resetMeeting": "Reset",
+    "newMeeting": "New Meeting",
+    "meetingFinished": "Meeting Finished!",
+    "meetingFinishedDescription": "View the summary or start a new meeting.",
+    "wheelPreview": "Wheel Preview",
+    "wheelPreviewDescription": "Mark participants as present to see who will participate in the meeting.",
+    "noParticipantsPresent": "No participants present",
+    "noParticipantsPresentDescription": "Mark participants as present to use the wheel.",
+    "allParticipantsSpoken": "All participants have spoken!",
+    "allParticipantsSpokenDescription": "You can end the meeting."
+  },
+  "participants": {
+    "addParticipant": "Add Participant",
+    "name": "Name",
+    "namePlaceholder": "Participant name",
+    "allocatedTime": "Allocated Time (mm:ss)",
+    "allocatedTimeLabel": "Allocated Time (minutes)",
+    "actions": "Actions",
+    "present": "Present",
+    "absent": "Absent",
+    "participants": "Participants",
+    "participantSelection": "Participant Selection",
+    "whosTurn": "Who's turn?",
+    "selecting": "Selecting...",
+    "remaining": "remaining",
+    "remainingPlural": "remaining",
+    "add": "Add"
+  },
+  "timer": {
+    "allocatedTime": "Allocated time",
+    "readyToStart": "Ready to start",
+    "timeRemaining": "Time remaining",
+    "overtime": "Overtime by",
+    "start": "Start",
+    "finish": "Finish",
+    "close": "Close"
+  },
+  "history": {
+    "title": "Meeting History",
+    "noMeetings": "No meetings recorded",
+    "noMeetingsDescription": "Your completed meetings will appear here automatically.",
+    "createMeeting": "Create Meeting",
+    "backToHistory": "Back to History",
+    "viewDetails": "View Details",
+    "list": "List",
+    "dashboard": "Dashboard",
+    "search": "Search by date, participant...",
+    "sort": {
+      "date": "Date",
+      "participants": "Participants",
+      "duration": "Duration",
+      "overtime": "Overtimes"
+    },
+    "export": "Export",
+    "import": "Import"
+  },
+  "dashboard": {
+    "noData": "No data available",
+    "noDataDescription": "Complete a few meetings to see statistics.",
+    "totalMeetings": "Total Meetings",
+    "averageParticipants": "Average Participants",
+    "averageDuration": "Average Duration",
+    "overtimes": "Overtimes",
+    "meetingRecords": "Meeting Records",
+    "longestMeeting": "Longest meeting",
+    "shortestMeeting": "Shortest meeting",
+    "mostParticipants": "Most participants",
+    "overtimeParticipants": "Participants with Overtimes",
+    "noOvertimes": "No overtimes recorded",
+    "recentMeetings": "Recent Meetings"
+  },
+  "import": {
+    "title": "Import Data",
+    "warning": "Warning",
+    "warningText": "Importing will replace all existing data:",
+    "warningItems": {
+      "participants": "All current participants",
+      "history": "Meeting history",
+      "settings": "Current meeting settings"
+    },
+    "irreversible": "This action is irreversible. Make sure you have exported your current data if needed.",
+    "selectFile": "Select a JSON file:",
+    "acceptedFormat": "Accepted format: JSON file exported from this application",
+    "cancel": "Cancel",
+    "success": "Data imported successfully!",
+    "successDetails": "{meetings} meetings and {participants} participants restored.",
+    "invalidFile": "Invalid file: incorrect data structure",
+    "invalidJson": "Import error: invalid JSON file"
+  },
+  "summary": {
+    "timeComparison": "Time Comparison",
+    "totalAllocatedTime": "Total allocated time",
+    "totalUsedTime": "Total used time",
+    "participantDetails": "Participant Details",
+    "participant": "Participant",
+    "usedTime": "Used time",
+    "difference": "Difference",
+    "status": "Status",
+    "didNotSpeak": "Did not speak",
+    "overtime": "Overtime",
+    "respected": "Respected",
+    "startTime": "Start",
+    "endTime": "End"
+  },
+  "stats": {
+    "totalDuration": "Total duration",
+    "totalParticipants": "Total participants",
+    "participantsWhoSpoke": "Participants who spoke",
+    "overtimeCount": "Overtimes"
+  },
+  "language": {
+    "french": "Français",
+    "english": "English"
+  }
+}

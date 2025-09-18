@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Daily Scrum Time Management",
+    "description": "Organisez efficacement le temps de parole de vos participants lors des réunions"
+  },
+  "navigation": {
+    "history": "Historique",
+    "backToHome": "Retour à l'accueil"
+  },
+  "meeting": {
+    "startMeeting": "Démarrer la réunion",
+    "endMeeting": "Finir la réunion",
+    "resetMeeting": "Réinitialiser",
+    "newMeeting": "Nouvelle réunion",
+    "meetingFinished": "Réunion terminée !",
+    "meetingFinishedDescription": "Consultez le résumé ou démarrez une nouvelle réunion.",
+    "wheelPreview": "Aperçu de la roue",
+    "wheelPreviewDescription": "Marquez les participants comme présents pour voir qui participera à la réunion.",
+    "noParticipantsPresent": "Aucun participant présent",
+    "noParticipantsPresentDescription": "Marquez des participants comme présents pour utiliser la roue.",
+    "allParticipantsSpoken": "Tous les participants ont parlé !",
+    "allParticipantsSpokenDescription": "Vous pouvez finir la réunion."
+  },
+  "participants": {
+    "addParticipant": "Ajouter un participant",
+    "name": "Nom",
+    "namePlaceholder": "Nom du participant",
+    "allocatedTime": "Temps alloué (mm:ss)",
+    "allocatedTimeLabel": "Temps alloué (minutes)",
+    "actions": "Actions",
+    "present": "Présent",
+    "absent": "Absent",
+    "participants": "Participants",
+    "participantSelection": "Sélection des participants",
+    "whosTurn": "À qui le tour ?",
+    "selecting": "Sélection en cours...",
+    "remaining": "restant",
+    "remainingPlural": "restants",
+    "add": "Ajouter"
+  },
+  "timer": {
+    "allocatedTime": "Temps alloué",
+    "readyToStart": "Prêt à commencer",
+    "timeRemaining": "Temps restant",
+    "overtime": "Temps dépassé de",
+    "start": "Commencer",
+    "finish": "Terminer",
+    "close": "Fermer"
+  },
+  "history": {
+    "title": "Historique des réunions",
+    "noMeetings": "Aucune réunion enregistrée",
+    "noMeetingsDescription": "Vos réunions terminées apparaîtront ici automatiquement.",
+    "createMeeting": "Créer une réunion",
+    "backToHistory": "Retour à l'historique",
+    "viewDetails": "Voir détails",
+    "list": "Liste",
+    "dashboard": "Dashboard",
+    "search": "Rechercher par date, participant...",
+    "sort": {
+      "date": "Date",
+      "participants": "Participants",
+      "duration": "Durée",
+      "overtime": "Dépassements"
+    },
+    "export": "Exporter",
+    "import": "Importer"
+  },
+  "dashboard": {
+    "noData": "Aucune donnée disponible",
+    "noDataDescription": "Terminez quelques réunions pour voir les statistiques.",
+    "totalMeetings": "Total Réunions",
+    "averageParticipants": "Participants Moyens",
+    "averageDuration": "Durée Moyenne",
+    "overtimes": "Dépassements",
+    "meetingRecords": "Records de Réunions",
+    "longestMeeting": "Plus longue réunion",
+    "shortestMeeting": "Plus courte réunion",
+    "mostParticipants": "Plus de participants",
+    "overtimeParticipants": "Participants avec Dépassements",
+    "noOvertimes": "Aucun dépassement enregistré",
+    "recentMeetings": "Réunions Récentes"
+  },
+  "import": {
+    "title": "Importer des données",
+    "warning": "Attention",
+    "warningText": "L'importation remplacera toutes les données existantes :",
+    "warningItems": {
+      "participants": "Tous les participants actuels",
+      "history": "L'historique des réunions",
+      "settings": "Les paramètres de réunion en cours"
+    },
+    "irreversible": "Cette action est irréversible. Assurez-vous d'avoir exporté vos données actuelles si nécessaire.",
+    "selectFile": "Sélectionner un fichier JSON :",
+    "acceptedFormat": "Format accepté : fichier JSON exporté depuis cette application",
+    "cancel": "Annuler",
+    "success": "Données importées avec succès!",
+    "successDetails": "{meetings} réunions et {participants} participants restaurés.",
+    "invalidFile": "Fichier invalide : structure de données incorrecte",
+    "invalidJson": "Erreur lors de l'importation : fichier JSON invalide"
+  },
+  "summary": {
+    "timeComparison": "Comparaison des temps",
+    "totalAllocatedTime": "Temps total alloué",
+    "totalUsedTime": "Temps total utilisé",
+    "participantDetails": "Détail par participant",
+    "participant": "Participant",
+    "usedTime": "Temps utilisé",
+    "difference": "Différence",
+    "status": "Statut",
+    "didNotSpeak": "N'a pas parlé",
+    "overtime": "Dépassement",
+    "respected": "Respecté",
+    "startTime": "Début",
+    "endTime": "Fin"
+  },
+  "stats": {
+    "totalDuration": "Durée totale",
+    "totalParticipants": "Participants totaux",
+    "participantsWhoSpoke": "Participants ayant parlé",
+    "overtimeCount": "Dépassements"
+  },
+  "language": {
+    "french": "Français",
+    "english": "English"
+  }
+}
