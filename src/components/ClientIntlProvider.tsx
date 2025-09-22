@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { NextIntlClientProvider, type AbstractIntlMessages } from 'next-intl';
 import { defaultLocale, locales } from '@/i18n/request';
+import { getMessages } from '@/utils/messages';
 
 type Locale = typeof locales[number];
 
@@ -49,15 +50,15 @@ export function ClientIntlProvider({
   useEffect(() => {
     // Load messages when locale changes or on initial load if locale differs from initial
     if (locale !== initialLocale || (typeof window !== 'undefined' && localStorage.getItem('locale') !== initialLocale)) {
-      import(`../messages/${locale}.json`)
-        .then((module) => {
-          setMessages(module.default);
-        })
-        .catch((error) => {
-          console.error('Failed to load messages for locale:', locale, error);
-          // Fallback to default locale
-          setLocale(defaultLocale);
-        });
+      try {
+        const newMessages = getMessages(locale as keyof typeof import('@/utils/messages').messagesMap);
+        setMessages(newMessages);
+      } catch (error) {
+        console.error('Failed to load messages for locale:', locale, error);
+        // Fallback to default locale
+        setLocale(defaultLocale);
+        setMessages(getMessages(defaultLocale as keyof typeof import('@/utils/messages').messagesMap));
+      }
     }
   }, [locale, initialLocale]);
 

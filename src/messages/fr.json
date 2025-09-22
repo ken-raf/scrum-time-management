@@ -123,5 +123,33 @@
   "language": {
     "french": "Français",
     "english": "English"
+  },
+  "media": {
+    "openMusicPlayer": "Ouvrir le lecteur musical",
+    "music": "Musique",
+    "file": "Fichier",
+    "url": "URL",
+    "add": "Ajouter",
+    "minimize": "Réduire",
+    "close": "Fermer",
+    "uploadAudioVideo": "Télécharger fichier Audio/Vidéo",
+    "addMusicUrl": "Ajouter URL musicale",
+    "youtubeAudioUrl": "URL YouTube ou audio...",
+    "youtubeVideoPlayer": "Lecteur vidéo YouTube",
+    "closeVideo": "Fermer la vidéo",
+    "uploadFiles": "Téléchargez audio/vidéo ou collez URL YouTube"
+  },
+  "liveStats": {
+    "title": "Statistiques en temps réel",
+    "presentParticipants": "Participants présents",
+    "haveSpoken": "Ont parlé",
+    "timeUsed": "Temps utilisé",
+    "overtimes": "Dépassements",
+    "meetingProgress": "Progression de la réunion",
+    "totalAllocatedTime": "Temps total alloué",
+    "elapsedTime": "Temps écoulé",
+    "participantsStatus": "État des participants",
+    "haveSpokenList": "✅ Ont parlé",
+    "waiting": "⏳ En attente"
   }
 }

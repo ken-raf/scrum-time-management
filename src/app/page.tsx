@@ -11,6 +11,7 @@ import { SpeakingModal } from '@/components/SpeakingModal';
 import { LiveStats } from '@/components/LiveStats';
 import { MeetingSummary } from '@/components/MeetingSummary';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { FloatingMediaPlayer } from '@/components/FloatingMediaPlayer';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { Users, Clock, History } from 'lucide-react';
 import Link from 'next/link';
@@ -103,9 +104,11 @@ export default function Home() {
 
         {meetingState.isStarted && !meetingState.isFinished ? (
           /* During Meeting Layout */
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Live Stats */}
-            <LiveStats />
+            <div className="lg:col-span-2">
+              <LiveStats />
+            </div>
 
             {/* Right Column - Spin Wheel */}
             <div className="space-y-6">
@@ -190,6 +193,9 @@ export default function Home() {
 
         {/* Summary is now shown directly in page, no modal needed */}
       </div>
+
+      {/* Floating Media Player */}
+      <FloatingMediaPlayer />
     </div>
   );
 }

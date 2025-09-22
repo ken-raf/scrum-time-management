@@ -123,5 +123,33 @@
   "language": {
     "french": "Français",
     "english": "English"
+  },
+  "media": {
+    "openMusicPlayer": "Open Music Player",
+    "music": "Music",
+    "file": "File",
+    "url": "URL",
+    "add": "Add",
+    "minimize": "Minimize",
+    "close": "Close",
+    "uploadAudioVideo": "Upload Audio/Video File",
+    "addMusicUrl": "Add Music URL",
+    "youtubeAudioUrl": "YouTube or audio URL...",
+    "youtubeVideoPlayer": "YouTube video player",
+    "closeVideo": "Close Video",
+    "uploadFiles": "Upload audio/video or paste YouTube URL"
+  },
+  "liveStats": {
+    "title": "Live Statistics",
+    "presentParticipants": "Present participants",
+    "haveSpoken": "Have spoken",
+    "timeUsed": "Time used",
+    "overtimes": "Overtimes",
+    "meetingProgress": "Meeting progress",
+    "totalAllocatedTime": "Total allocated time",
+    "elapsedTime": "Elapsed time",
+    "participantsStatus": "Participants Status",
+    "haveSpokenList": "✅ Have spoken",
+    "waiting": "⏳ Waiting"
   }
 }
