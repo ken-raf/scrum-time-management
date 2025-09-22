@@ -1,6 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { useLanguage } from '@/components/ClientIntlProvider';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useTimer } from '@/hooks/useTimer';
 import { formatTime } from '@/utils/time';
@@ -14,6 +16,8 @@ interface SpeakingModalProps {
 }
 
 export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: SpeakingModalProps) => {
+  const t = useTranslations();
+  const { locale } = useLanguage();
   const {
     participants,
     currentSpeakingTime,
@@ -33,12 +37,42 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
   const isOvertime = currentSpeakingTime > participant.allocatedTime;
   const remainingTime = participant.allocatedTime - currentSpeakingTime;
 
+  // Text-to-speech thank you function
+  const speakThankYou = (participantName: string) => {
+    try {
+      if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        speechSynthesis.cancel();
+
+        // Create the thank you message based on locale
+        const thankYouText = locale === 'fr'
+          ? `Merci ${participantName}`
+          : `Thank you ${participantName}`;
+
+        const utterance = new SpeechSynthesisUtterance(thankYouText);
+
+        // Set language based on current locale
+        utterance.lang = locale === 'fr' ? 'fr-FR' : 'en-US';
+        utterance.rate = 0.9;
+        utterance.volume = 0.8;
+
+        // Speak immediately
+        speechSynthesis.speak(utterance);
+      }
+    } catch (error) {
+      console.warn('Text-to-speech not available:', error);
+    }
+  };
+
   const handleStart = () => {
     resetCurrentSpeakingTime();
     startSpeaking(participantId);
   };
 
   const handleStop = () => {
+    // Play thank you message before stopping
+    speakThankYou(participant.name);
+
     stopSpeaking();
     onNext();
     onClose();

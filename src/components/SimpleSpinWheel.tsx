@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useLanguage } from '@/components/ClientIntlProvider';
 import { useMeetingStore } from '@/stores/meetingStore';
 
 interface SimpleSpinWheelProps {
@@ -11,6 +12,7 @@ interface SimpleSpinWheelProps {
 
 export const SimpleSpinWheel = ({ onParticipantSelected }: SimpleSpinWheelProps) => {
   const t = useTranslations();
+  const { locale } = useLanguage();
   const { participants, meetingState } = useMeetingStore();
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
@@ -124,6 +126,36 @@ export const SimpleSpinWheel = ({ onParticipantSelected }: SimpleSpinWheelProps)
     isPlayingSoundRef.current = false;
   };
 
+  // Text-to-speech function
+  const speakParticipantName = (participantName: string) => {
+    try {
+      // Check if speech synthesis is supported
+      if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        speechSynthesis.cancel();
+
+        // Create the announcement text based on locale
+        const announcementText = locale === 'fr'
+          ? `Au tour de ${participantName}`
+          : `Next speaker: ${participantName}`;
+
+        const utterance = new SpeechSynthesisUtterance(announcementText);
+
+        // Set language based on current locale
+        utterance.lang = locale === 'fr' ? 'fr-FR' : 'en-US';
+        utterance.rate = 0.9; // Slightly slower for clarity
+        utterance.volume = 0.8;
+
+        // Speak after a short delay to let the spin sound finish
+        setTimeout(() => {
+          speechSynthesis.speak(utterance);
+        }, 500);
+      }
+    } catch (error) {
+      console.warn('Text-to-speech not available:', error);
+    }
+  };
+
   const spinWheel = () => {
     if (isSpinning || wheelParticipants.length === 0 || isPreviewMode) return;
 
@@ -170,11 +202,15 @@ export const SimpleSpinWheel = ({ onParticipantSelected }: SimpleSpinWheelProps)
 
     setRotation(finalRotation);
 
-    // Wait for animation to complete, then wait 2 more seconds before opening modal
+    // Wait for animation to complete, then announce participant and wait before opening modal
     setTimeout(() => {
       stopSpinSound();
       setIsSpinning(false);
-      // Wait 2 seconds to let user see the result
+
+      // Announce the selected participant's name
+      speakParticipantName(selectedParticipant.name);
+
+      // Wait 2 seconds to let user see the result and hear the announcement
       setTimeout(() => {
         onParticipantSelected(selectedParticipant.id);
       }, 2000);

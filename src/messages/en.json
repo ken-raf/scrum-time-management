@@ -151,5 +151,14 @@
     "participantsStatus": "Participants Status",
     "haveSpokenList": "✅ Have spoken",
     "waiting": "⏳ Waiting"
+  },
+  "speakingModal": {
+    "allocatedTime": "Allocated time",
+    "readyToStart": "Ready to start",
+    "timeRemaining": "Time remaining",
+    "overtimeBy": "Overtime by",
+    "start": "Start",
+    "finish": "Finish",
+    "close": "Close"
   }
 }
