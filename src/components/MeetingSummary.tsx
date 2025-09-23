@@ -115,8 +115,8 @@ export const MeetingSummary = () => {
                 return (
                   <tr
                     key={participant.id}
-                    className={`border-b border-gray-100 ${
-                      isOvertime ? 'bg-secondary' : hasSpoken ? 'bg-secondary' : 'bg-gray-50'
+                    className={`border-b border-border ${
+                      isOvertime ? 'bg-secondary' : hasSpoken ? 'bg-secondary' : 'bg-surface-hover'
                     }`}
                   >
                     <td className="py-3 px-2 font-medium text-foreground">

@@ -160,7 +160,7 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
                 {!isSpeaking ? (
                   <button
                     onClick={handleStart}
-                    className="w-full bg-yellow-500 text-black py-4 px-6 rounded-lg font-semibold text-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center justify-center gap-3"
+                    className="w-full bg-success text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-success/90 focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 flex items-center justify-center gap-3"
                   >
                     <Play size={24} />
                     Commencer
@@ -170,8 +170,8 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
                     onClick={handleStop}
                     className={`w-full py-4 px-6 rounded-lg font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-3 ${
                       isOvertime
-                        ? 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
-                        : 'bg-yellow-500 text-black hover:bg-yellow-600 focus:ring-yellow-500'
+                        ? 'bg-error text-white hover:bg-error/90 focus:ring-error'
+                        : 'bg-primary text-primary-foreground hover:bg-primary-hover focus:ring-primary'
                     }`}
                   >
                     <Square size={24} />

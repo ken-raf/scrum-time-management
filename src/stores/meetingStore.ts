@@ -108,7 +108,12 @@ export const useMeetingStore = create<MeetingStore>()(
           minute: '2-digit'
         })}`;
 
+        // Clear actualTime for all participants at the start of a new meeting
         set((state) => ({
+          participants: state.participants.map(p => ({
+            ...p,
+            actualTime: undefined
+          })),
           meetingState: {
             ...state.meetingState,
             isStarted: true,
@@ -224,8 +229,8 @@ export const useMeetingStore = create<MeetingStore>()(
           participants: presentParticipants.map(p => ({
             name: p.name,
             allocatedTime: p.allocatedTime,
-            actualTime: p.actualTime || 0,
-            isOvertime: (p.actualTime || 0) > p.allocatedTime,
+            actualTime: p.actualTime,
+            isOvertime: p.actualTime ? p.actualTime > p.allocatedTime : false,
           })),
         };
 
@@ -241,9 +246,9 @@ export const useMeetingStore = create<MeetingStore>()(
 
         const presentParticipants = participants.filter(p => p.isPresent);
         const participantsWithTime = presentParticipants.filter(p => p.actualTime !== undefined);
-        const overtimeParticipants = participantsWithTime.filter(p => (p.actualTime || 0) > p.allocatedTime);
+        const overtimeParticipants = participantsWithTime.filter(p => p.actualTime && p.actualTime > p.allocatedTime);
         const totalAllocatedTime = presentParticipants.reduce((sum, p) => sum + p.allocatedTime, 0);
-        const totalActualTime = participantsWithTime.reduce((sum, p) => sum + (p.actualTime || 0), 0);
+        const totalActualTime = participantsWithTime.reduce((sum, p) => sum + (p.actualTime ?? 0), 0);
 
         const startTime = new Date(meetingState.startTime);
         const endTime = meetingState.endTime ? new Date(meetingState.endTime) : new Date();
@@ -267,8 +272,8 @@ export const useMeetingStore = create<MeetingStore>()(
           participants: presentParticipants.map(p => ({
             name: p.name,
             allocatedTime: p.allocatedTime,
-            actualTime: p.actualTime || 0,
-            isOvertime: (p.actualTime || 0) > p.allocatedTime,
+            actualTime: p.actualTime,
+            isOvertime: p.actualTime ? p.actualTime > p.allocatedTime : false,
             isPresent: p.isPresent,
           })),
           summary: {

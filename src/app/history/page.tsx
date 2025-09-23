@@ -282,8 +282,8 @@ export default function HistoryPage() {
                   </thead>
                   <tbody>
                     {selectedMeeting.participants.map((participant, index) => {
-                      const difference = participant.actualTime - participant.allocatedTime;
-                      const hasSpoken = participant.actualTime > 0;
+                      const difference = (participant.actualTime ?? 0) - participant.allocatedTime;
+                      const hasSpoken = participant.actualTime !== undefined;
 
                       return (
                         <tr
@@ -297,7 +297,7 @@ export default function HistoryPage() {
                             {formatTime(participant.allocatedTime)}
                           </td>
                           <td className="py-3 px-2 font-mono text-foreground">
-                            {hasSpoken ? formatTime(participant.actualTime) : '-'}
+                            {hasSpoken ? formatTime(participant.actualTime!) : '-'}
                           </td>
                           <td className={`py-3 px-2 font-mono font-semibold ${
                             !hasSpoken
@@ -671,7 +671,7 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
         participantMeetings[participant.name] = 0;
       }
       participantMeetings[participant.name]++;
-      if (participant.isOvertime && participant.actualTime > 0) {
+      if (participant.isOvertime && participant.actualTime !== undefined) {
         participantOvertimes[participant.name]++;
       }
     });
