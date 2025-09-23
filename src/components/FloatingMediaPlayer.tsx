@@ -26,7 +26,7 @@ export const FloatingMediaPlayer = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const [mediaName, setMediaName] = useState<string>('');
-  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [, setMediaFile] = useState<File | null>(null);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const [isYouTube, setIsYouTube] = useState(false);

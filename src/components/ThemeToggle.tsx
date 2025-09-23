@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ColorPalette, ThemeMode } from '@/types/theme';
 import { Sun, Moon, Monitor, Palette, Check } from 'lucide-react';
 
 export function ThemeToggle() {
-  const t = useTranslations();
+  // const t = useTranslations();
   const { theme, setThemeMode, setColorPalette, isDark } = useTheme();
   const [showPalettes, setShowPalettes] = useState(false);
   const [mounted, setMounted] = useState(false);

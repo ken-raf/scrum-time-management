@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { useLanguage } from '@/components/ClientIntlProvider';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useTimer } from '@/hooks/useTimer';
@@ -16,7 +16,7 @@ interface SpeakingModalProps {
 }
 
 export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: SpeakingModalProps) => {
-  const t = useTranslations();
+  // const t = useTranslations();
   const { locale } = useLanguage();
   const {
     participants,

@@ -23,7 +23,7 @@ export interface MeetingSummary {
   participants: Array<{
     name: string;
     allocatedTime: number;
-    actualTime: number;
+    actualTime: number | undefined;
     isOvertime: boolean;
   }>;
 }
@@ -37,7 +37,7 @@ export interface HistoricalMeeting {
   participants: Array<{
     name: string;
     allocatedTime: number;
-    actualTime: number;
+    actualTime: number | undefined;
     isOvertime: boolean;
     isPresent: boolean;
   }>;
