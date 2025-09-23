@@ -276,7 +276,7 @@ export const colorPalettes: Record<ColorPalette, { light: ThemeColors; dark: The
   },
   teal: {
     light: {
-      background: '#ffffff',
+      background: '#ffffff', 
       surface: '#f7fffe',
       surfaceHover: '#f0fdfa',
       foreground: '#1e293b',
