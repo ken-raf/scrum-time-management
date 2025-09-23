@@ -12,6 +12,7 @@ import { LiveStats } from '@/components/LiveStats';
 import { MeetingSummary } from '@/components/MeetingSummary';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { FloatingMediaPlayer } from '@/components/FloatingMediaPlayer';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { Users, Clock, History } from 'lucide-react';
 import Link from 'next/link';
@@ -56,25 +57,28 @@ export default function Home() {
   // No longer needed - summary shows directly in page
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-theme">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-between mb-4">
-            <LanguageSwitcher />
-            <h1 className="text-4xl font-bold text-gray-800 flex items-center gap-3">
-              <Clock size={40} className="text-yellow-500" />
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
+            <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
+              <Clock size={40} className="text-primary" />
               {t('app.title')}
             </h1>
             <Link
               href="/history"
-              className="flex items-center gap-2 bg-white text-yellow-600 border border-yellow-600 px-4 py-2 rounded-lg font-medium hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+              className="flex items-center gap-2 bg-surface hover:bg-surface-hover text-primary border border-primary px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             >
               <History size={20} />
               {t('navigation.history')}
             </Link>
           </div>
-          <p className="text-gray-600 text-lg">
+          <p className="text-foreground-secondary text-lg">
             {t('app.description')}
           </p>
         </div>
@@ -84,9 +88,9 @@ export default function Home() {
 
         {/* Meeting Name - Show when meeting is active */}
         {meetingState.isStarted && meetingState.name && (
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+          <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold text-foreground">
                 {meetingState.name}
               </h2>
             </div>
@@ -95,7 +99,7 @@ export default function Home() {
 
         {/* Meeting Controls - Show at top when meeting is active or finished */}
         {meetingState.isStarted && (
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+          <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
             <div className="flex justify-center">
               <MeetingControls onNewMeeting={handleNewMeeting} />
             </div>
@@ -112,10 +116,10 @@ export default function Home() {
 
             {/* Right Column - Spin Wheel */}
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-md">
+              <div className="bg-surface rounded-lg shadow-md">
                 <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                    <Users size={24} className="text-yellow-500" />
+                  <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                    <Users size={24} className="text-primary" />
                     {t('participants.participantSelection')}
                   </h2>
                 </div>
@@ -138,30 +142,30 @@ export default function Home() {
 
               {/* Right Column - Meeting Flow */}
               <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md">
+                <div className="bg-surface rounded-lg shadow-md">
                   <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                      <Users size={24} className="text-yellow-500" />
+                    <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                      <Users size={24} className="text-primary" />
                       {t('participants.participantSelection')}
                     </h2>
                   </div>
                   {meetingState.isFinished ? (
                     <div className="p-8 text-center">
-                      <Users size={64} className="text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      <Users size={64} className="text-foreground-muted mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">
                         {t('meeting.meetingFinished')}
                       </h3>
-                      <p className="text-gray-500">
+                      <p className="text-foreground-muted">
                         {t('meeting.meetingFinishedDescription')}
                       </p>
                     </div>
                   ) : (
                     <div className="p-8">
                       <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                        <h3 className="text-lg font-semibold text-foreground mb-2">
                           {t('meeting.wheelPreview')}
                         </h3>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-foreground-muted text-sm">
                           {t('meeting.wheelPreviewDescription')}
                         </p>
                       </div>

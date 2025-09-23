@@ -39,7 +39,7 @@ export const MeetingControls = ({ onNewMeeting }: MeetingControlsProps) => {
       <div className="flex justify-center">
         <button
           onClick={onNewMeeting || handleResetMeeting}
-          className="bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center gap-2"
+          className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center gap-2"
         >
           <RotateCcw size={20} />
           Nouvelle réunion
@@ -54,7 +54,7 @@ export const MeetingControls = ({ onNewMeeting }: MeetingControlsProps) => {
         <button
           onClick={handleStartMeeting}
           disabled={!canStartMeeting}
-          className="bg-yellow-500 text-black px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-3"
+          className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:bg-foreground-muted disabled:cursor-not-allowed flex items-center gap-3"
         >
           <Play size={24} />
           Démarrer la réunion
@@ -63,14 +63,14 @@ export const MeetingControls = ({ onNewMeeting }: MeetingControlsProps) => {
         <>
           <button
             onClick={handleEndMeeting}
-            className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center gap-2"
+            className="bg-error text-white px-6 py-3 rounded-lg font-semibold hover:bg-error focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 flex items-center gap-2"
           >
             <Square size={20} />
             Finir la réunion
           </button>
           <button
             onClick={handleResetMeeting}
-            className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center gap-2"
+            className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-secondary-hover focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 flex items-center gap-2"
           >
             <RotateCcw size={20} />
             Réinitialiser

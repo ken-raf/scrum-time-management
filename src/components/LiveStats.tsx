@@ -24,55 +24,55 @@ export const LiveStats = () => {
   return (
     <div className="space-y-6">
       {/* Stats Overview */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
-          <Target size={24} className="text-blue-600" />
+      <div className="bg-surface rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 text-foreground flex items-center gap-2">
+          <Target size={24} className="text-primary" />
           {t('liveStats.title')}
         </h2>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-blue-50 rounded-lg p-4 text-center">
-            <Users size={24} className="text-blue-600 mx-auto mb-2" />
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.presentParticipants')}</p>
-            <p className="text-2xl font-bold text-gray-800">{presentParticipants.length}</p>
+          <div className="bg-secondary rounded-lg p-4 text-center">
+            <Users size={24} className="text-primary mx-auto mb-2" />
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.presentParticipants')}</p>
+            <p className="text-2xl font-bold text-foreground">{presentParticipants.length}</p>
           </div>
 
-          <div className="bg-green-50 rounded-lg p-4 text-center">
-            <CheckCircle size={24} className="text-green-600 mx-auto mb-2" />
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.haveSpoken')}</p>
-            <p className="text-2xl font-bold text-gray-800">
+          <div className="bg-secondary rounded-lg p-4 text-center">
+            <CheckCircle size={24} className="text-success mx-auto mb-2" />
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.haveSpoken')}</p>
+            <p className="text-2xl font-bold text-foreground">
               {spokenParticipants.length}/{presentParticipants.length}
             </p>
           </div>
 
-          <div className="bg-yellow-50 rounded-lg p-4 text-center">
-            <Clock size={24} className="text-yellow-600 mx-auto mb-2" />
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.timeUsed')}</p>
-            <p className="text-xl font-bold text-gray-800 font-mono">
+          <div className="bg-secondary rounded-lg p-4 text-center">
+            <Clock size={24} className="text-warning mx-auto mb-2" />
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.timeUsed')}</p>
+            <p className="text-xl font-bold text-foreground font-mono">
               {formatTime(totalUsedTime)}
             </p>
           </div>
 
           <div className={`rounded-lg p-4 text-center ${
-            overtimeParticipants.length > 0 ? 'bg-red-50' : 'bg-green-50'
+            overtimeParticipants.length > 0 ? 'bg-secondary' : 'bg-secondary'
           }`}>
             {overtimeParticipants.length > 0 ? (
-              <AlertTriangle size={24} className="text-red-600 mx-auto mb-2" />
+              <AlertTriangle size={24} className="text-error mx-auto mb-2" />
             ) : (
-              <CheckCircle size={24} className="text-green-600 mx-auto mb-2" />
+              <CheckCircle size={24} className="text-success mx-auto mb-2" />
             )}
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.overtimes')}</p>
-            <p className="text-2xl font-bold text-gray-800">{overtimeParticipants.length}</p>
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.overtimes')}</p>
+            <p className="text-2xl font-bold text-foreground">{overtimeParticipants.length}</p>
           </div>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="flex justify-between text-sm text-foreground-secondary mb-2">
             <span>{t('liveStats.meetingProgress')}</span>
             <span>{spokenParticipants.length}/{presentParticipants.length}</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="w-full bg-border rounded-full h-3">
             <div
               className="bg-blue-600 h-3 rounded-full transition-all duration-300"
               style={{
@@ -85,14 +85,14 @@ export const LiveStats = () => {
         {/* Time Comparison */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.totalAllocatedTime')}</p>
-            <p className="text-lg font-bold text-blue-600 font-mono">
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.totalAllocatedTime')}</p>
+            <p className="text-lg font-bold text-primary font-mono">
               {formatTime(totalAllocatedTime)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">{t('liveStats.elapsedTime')}</p>
-            <p className="text-lg font-bold text-green-600 font-mono">
+            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.elapsedTime')}</p>
+            <p className="text-lg font-bold text-success font-mono">
               {formatTime(globalTimer)}
             </p>
           </div>
@@ -100,8 +100,8 @@ export const LiveStats = () => {
       </div>
 
       {/* Participants Status */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">
+      <div className="bg-surface rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-semibold mb-4 text-foreground">
           {t('liveStats.participantsStatus')}
         </h3>
 
@@ -109,7 +109,7 @@ export const LiveStats = () => {
           {/* Spoken Participants */}
           {spokenParticipants.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-green-700 mb-2">
+              <h4 className="text-sm font-medium text-success mb-2">
                 {t('liveStats.haveSpokenList')} ({spokenParticipants.length})
               </h4>
               <div className="space-y-2">
@@ -119,22 +119,22 @@ export const LiveStats = () => {
                     <div
                       key={participant.id}
                       className={`flex justify-between items-center p-2 rounded ${
-                        isOvertime ? 'bg-red-50' : 'bg-green-50'
+                        isOvertime ? 'bg-secondary' : 'bg-secondary'
                       }`}
                     >
-                      <span className="text-gray-800">{participant.name}</span>
+                      <span className="text-foreground">{participant.name}</span>
                       <div className="flex items-center gap-2 text-sm">
                         <span className={`font-mono font-semibold ${
-                          isOvertime ? 'text-red-600' : 'text-green-600'
+                          isOvertime ? 'text-error' : 'text-success'
                         }`}>
                           {formatTime(participant.actualTime || 0)}
                         </span>
-                        <span className="text-gray-500">/</span>
-                        <span className="font-mono text-gray-600">
+                        <span className="text-foreground-muted">/</span>
+                        <span className="font-mono text-foreground-secondary">
                           {formatTime(participant.allocatedTime)}
                         </span>
                         {isOvertime && (
-                          <AlertTriangle size={16} className="text-red-600" />
+                          <AlertTriangle size={16} className="text-error" />
                         )}
                       </div>
                     </div>
@@ -147,17 +147,17 @@ export const LiveStats = () => {
           {/* Remaining Participants */}
           {remainingParticipants.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-blue-700 mb-2">
+              <h4 className="text-sm font-medium text-primary mb-2">
                 {t('liveStats.waiting')} ({remainingParticipants.length})
               </h4>
               <div className="space-y-2">
                 {remainingParticipants.map(participant => (
                   <div
                     key={participant.id}
-                    className="flex justify-between items-center p-2 rounded bg-blue-50"
+                    className="flex justify-between items-center p-2 rounded bg-secondary"
                   >
-                    <span className="text-gray-800">{participant.name}</span>
-                    <span className="font-mono text-gray-600 text-sm">
+                    <span className="text-foreground">{participant.name}</span>
+                    <span className="font-mono text-foreground-secondary text-sm">
                       {formatTime(participant.allocatedTime)}
                     </span>
                   </div>

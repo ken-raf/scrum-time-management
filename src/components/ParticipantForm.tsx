@@ -25,14 +25,14 @@ export const ParticipantForm = () => {
   const isDisabled = meetingState.isStarted;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+    <div className="bg-surface rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4 text-foreground">
         {t('addParticipant')}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium text-foreground-secondary mb-1">
             {t('name')}
           </label>
           <input
@@ -41,14 +41,14 @@ export const ParticipantForm = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isDisabled}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 disabled:text-gray-500"
+            className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 disabled:text-gray-500"
             placeholder={t('namePlaceholder')}
             required
           />
         </div>
 
         <div>
-          <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="time" className="block text-sm font-medium text-foreground-secondary mb-1">
             {t('allocatedTime')}
           </label>
           <input
@@ -57,7 +57,7 @@ export const ParticipantForm = () => {
             value={timeInput}
             onChange={(e) => setTimeInput(e.target.value)}
             disabled={isDisabled}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 disabled:text-gray-500"
+            className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 disabled:text-gray-500"
             placeholder="02:00"
             pattern="^\d{2}:\d{2}$"
             required
@@ -67,7 +67,7 @@ export const ParticipantForm = () => {
         <button
           type="submit"
           disabled={isDisabled}
-          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <Plus size={20} />
           {t('add')}

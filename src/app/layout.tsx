@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { getMessages } from 'next-intl/server';
 import { defaultLocale } from '@/i18n/request';
 import { ClientIntlProvider } from '@/components/ClientIntlProvider';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,9 +34,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClientIntlProvider initialMessages={messages} initialLocale={defaultLocale}>
-          {children}
-        </ClientIntlProvider>
+        <ThemeProvider>
+          <ClientIntlProvider initialMessages={messages} initialLocale={defaultLocale}>
+            {children}
+          </ClientIntlProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

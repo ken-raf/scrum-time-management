@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useMeetingStore } from '@/stores/meetingStore';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { formatTime } from '@/utils/time';
 import { HistoricalMeeting } from '@/types';
 import {
@@ -177,13 +178,13 @@ export default function HistoryPage() {
 
   if (selectedMeeting) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-gradient-theme">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <button
               onClick={() => setSelectedMeeting(null)}
-              className="flex items-center gap-2 bg-yellow-500 text-black px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+              className="flex items-center gap-2 bg-primary text-black px-4 py-2 rounded-lg font-medium hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
             >
               <ArrowLeft size={20} />
               Retour à l&apos;historique
@@ -193,40 +194,38 @@ export default function HistoryPage() {
           {/* Meeting Detail */}
           <div className="space-y-6">
             {/* Header */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-4">
+            <div className="bg-surface rounded-lg shadow-md p-6">
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-3 mb-4">
                 <Calendar size={28} className="text-blue-600" />
                 {selectedMeeting.name}
               </h1>
 
               {/* Meeting Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
+                <div className="bg-secondary rounded-lg p-4 text-center">
                   <Clock size={32} className="text-blue-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-1">Durée totale</p>
-                  <p className="text-2xl font-bold text-gray-800 font-mono">
+                  <p className="text-sm text-foreground-secondary mb-1">Durée totale</p>
+                  <p className="text-2xl font-bold text-foreground font-mono">
                     {formatTime(selectedMeeting.totalDuration)}
                   </p>
                 </div>
 
-                <div className="bg-green-50 rounded-lg p-4 text-center">
+                <div className="bg-secondary rounded-lg p-4 text-center">
                   <Users size={32} className="text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 mb-1">Participants</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-sm text-foreground-secondary mb-1">Participants</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {selectedMeeting.summary.participantsWhoSpoke}/{selectedMeeting.summary.totalParticipants}
                   </p>
                 </div>
 
-                <div className={`rounded-lg p-4 text-center ${
-                  selectedMeeting.summary.totalOvertimeParticipants > 0 ? 'bg-red-50' : 'bg-green-50'
-                }`}>
+                <div className="bg-secondary rounded-lg p-4 text-center">
                   {selectedMeeting.summary.totalOvertimeParticipants > 0 ? (
                     <AlertTriangle size={32} className="text-red-600 mx-auto mb-2" />
                   ) : (
                     <CheckCircle size={32} className="text-green-600 mx-auto mb-2" />
                   )}
-                  <p className="text-sm text-gray-600 mb-1">Dépassements</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-sm text-foreground-secondary mb-1">Dépassements</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {selectedMeeting.summary.totalOvertimeParticipants}
                   </p>
                 </div>
@@ -234,19 +233,19 @@ export default function HistoryPage() {
             </div>
 
             {/* Time Comparison */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            <div className="bg-surface rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">
                 Comparaison des temps
               </h3>
               <div className="grid grid-cols-2 gap-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Temps total alloué</p>
+                <div className="text-center p-4 bg-secondary rounded-lg">
+                  <p className="text-sm text-foreground-secondary mb-1">Temps total alloué</p>
                   <p className="text-2xl font-bold text-blue-600 font-mono">
                     {formatTime(selectedMeeting.summary.totalAllocatedTime)}
                   </p>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Temps total utilisé</p>
+                <div className="text-center p-4 bg-secondary rounded-lg">
+                  <p className="text-sm text-foreground-secondary mb-1">Temps total utilisé</p>
                   <p className="text-2xl font-bold text-green-600 font-mono">
                     {formatTime(selectedMeeting.summary.totalActualTime)}
                   </p>
@@ -255,28 +254,28 @@ export default function HistoryPage() {
             </div>
 
             {/* Participants Details */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            <div className="bg-surface rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">
                 Détail par participant
               </h3>
 
               <div className="overflow-x-auto">
                 <table className="w-full table-auto">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-2 font-medium text-gray-700">
+                    <tr className="border-b border-border">
+                      <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                         Participant
                       </th>
-                      <th className="text-left py-3 px-2 font-medium text-gray-700">
+                      <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                         Temps alloué
                       </th>
-                      <th className="text-left py-3 px-2 font-medium text-gray-700">
+                      <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                         Temps utilisé
                       </th>
-                      <th className="text-left py-3 px-2 font-medium text-gray-700">
+                      <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                         Différence
                       </th>
-                      <th className="text-left py-3 px-2 font-medium text-gray-700">
+                      <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                         Statut
                       </th>
                     </tr>
@@ -289,27 +288,25 @@ export default function HistoryPage() {
                       return (
                         <tr
                           key={index}
-                          className={`border-b border-gray-100 ${
-                            participant.isOvertime ? 'bg-red-50' : hasSpoken ? 'bg-green-50' : 'bg-gray-50'
-                          }`}
+                          className="border-b border-border bg-secondary"
                         >
-                          <td className="py-3 px-2 font-medium text-gray-900">
+                          <td className="py-3 px-2 font-medium text-foreground">
                             {participant.name}
                           </td>
-                          <td className="py-3 px-2 font-mono text-gray-900">
+                          <td className="py-3 px-2 font-mono text-foreground">
                             {formatTime(participant.allocatedTime)}
                           </td>
-                          <td className="py-3 px-2 font-mono text-gray-900">
+                          <td className="py-3 px-2 font-mono text-foreground">
                             {hasSpoken ? formatTime(participant.actualTime) : '-'}
                           </td>
                           <td className={`py-3 px-2 font-mono font-semibold ${
                             !hasSpoken
-                              ? 'text-gray-400'
+                              ? 'text-foreground-muted'
                               : participant.isOvertime
-                              ? 'text-red-600'
+                              ? 'text-error'
                               : difference < 0
-                              ? 'text-green-600'
-                              : 'text-gray-800'
+                              ? 'text-success'
+                              : 'text-foreground'
                           }`}>
                             {!hasSpoken
                               ? '-'
@@ -324,18 +321,18 @@ export default function HistoryPage() {
                             <div className="flex items-center gap-2">
                               {!hasSpoken ? (
                                 <>
-                                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                                  <span className="text-sm text-gray-600">N&apos;a pas parlé</span>
+                                  <div className="w-2 h-2 bg-foreground-muted rounded-full"></div>
+                                  <span className="text-sm text-foreground-secondary">N&apos;a pas parlé</span>
                                 </>
                               ) : participant.isOvertime ? (
                                 <>
-                                  <AlertTriangle size={16} className="text-red-600" />
-                                  <span className="text-sm text-red-600 font-medium">Dépassement</span>
+                                  <AlertTriangle size={16} className="text-error" />
+                                  <span className="text-sm text-error font-medium">Dépassement</span>
                                 </>
                               ) : (
                                 <>
-                                  <CheckCircle size={16} className="text-green-600" />
-                                  <span className="text-sm text-green-600 font-medium">Respecté</span>
+                                  <CheckCircle size={16} className="text-success" />
+                                  <span className="text-sm text-success font-medium">Respecté</span>
                                 </>
                               )}
                             </div>
@@ -354,32 +351,35 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-theme">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 flex items-center gap-3">
-            <Calendar size={40} className="text-yellow-500" />
+          <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
+            <Calendar size={40} className="text-primary" />
             Historique des réunions
           </h1>
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium"
-          >
-            <ArrowLeft size={20} />
-            Retour à l&apos;accueil
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-primary hover:text-primary-hover font-medium"
+            >
+              <ArrowLeft size={20} />
+              Retour à l&apos;accueil
+            </Link>
+          </div>
         </div>
 
         {/* View Mode Toggle and Import/Export */}
         <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
-          <div className="flex bg-white rounded-lg p-1 shadow-sm">
+          <div className="flex bg-surface rounded-lg p-1 shadow-sm">
             <button
               onClick={() => setViewMode('list')}
               className={`px-4 py-2 rounded-md font-medium transition-colors ${
                 viewMode === 'list'
-                  ? 'bg-yellow-500 text-black'
-                  : 'text-black hover:text-gray-700'
+                  ? 'bg-primary text-black'
+                  : 'text-black hover:text-foreground-secondary'
               }`}
             >
               <Eye className="inline w-4 h-4 mr-2" />
@@ -389,8 +389,8 @@ export default function HistoryPage() {
               onClick={() => setViewMode('dashboard')}
               className={`px-4 py-2 rounded-md font-medium transition-colors ${
                 viewMode === 'dashboard'
-                  ? 'bg-yellow-500 text-black'
-                  : 'text-black hover:text-gray-700'
+                  ? 'bg-primary text-black'
+                  : 'text-black hover:text-foreground-secondary'
               }`}
             >
               <BarChart3 className="inline w-4 h-4 mr-2" />
@@ -418,17 +418,17 @@ export default function HistoryPage() {
         </div>
 
         {viewMode === 'list' && allMeetings.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <Calendar size={64} className="text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-surface rounded-lg shadow-md p-12 text-center">
+            <Calendar size={64} className="text-foreground-muted mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-foreground-secondary mb-2">
               Aucune réunion enregistrée
             </h2>
-            <p className="text-gray-500 mb-6">
+            <p className="text-foreground-muted mb-6">
               Vos réunions terminées apparaîtront ici automatiquement.
             </p>
             <Link
               href="/"
-              className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+              className="bg-primary text-black px-6 py-3 rounded-lg font-semibold hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
             >
               Créer une réunion
             </Link>
@@ -436,18 +436,18 @@ export default function HistoryPage() {
         ) : viewMode === 'list' ? (
           <>
             {/* Search and Sort Controls */}
-            <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
               <div className="flex flex-col lg:flex-row gap-4">
                 {/* Search */}
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground-muted" size={20} />
                     <input
                       type="text"
                       placeholder="Rechercher par date, participant..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-surface text-foreground"
                     />
                   </div>
                 </div>
@@ -458,8 +458,8 @@ export default function HistoryPage() {
                     onClick={() => handleSort('date')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors ${
                       sortField === 'date'
-                        ? 'bg-yellow-500 text-black shadow-md'
-                        : 'bg-gray-100 text-black hover:bg-gray-200 border border-gray-300'
+                        ? 'bg-primary text-black shadow-md'
+                        : 'bg-secondary text-foreground hover:bg-secondary-hover border border-border'
                     }`}
                   >
                     Date
@@ -471,8 +471,8 @@ export default function HistoryPage() {
                     onClick={() => handleSort('participants')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors ${
                       sortField === 'participants'
-                        ? 'bg-yellow-500 text-black shadow-md'
-                        : 'bg-gray-100 text-black hover:bg-gray-200 border border-gray-300'
+                        ? 'bg-primary text-black shadow-md'
+                        : 'bg-secondary text-foreground hover:bg-secondary-hover border border-border'
                     }`}
                   >
                     Participants
@@ -484,8 +484,8 @@ export default function HistoryPage() {
                     onClick={() => handleSort('duration')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors ${
                       sortField === 'duration'
-                        ? 'bg-yellow-500 text-black shadow-md'
-                        : 'bg-gray-100 text-black hover:bg-gray-200 border border-gray-300'
+                        ? 'bg-primary text-black shadow-md'
+                        : 'bg-secondary text-foreground hover:bg-secondary-hover border border-border'
                     }`}
                   >
                     Durée
@@ -497,8 +497,8 @@ export default function HistoryPage() {
                     onClick={() => handleSort('overtime')}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors ${
                       sortField === 'overtime'
-                        ? 'bg-yellow-500 text-black shadow-md'
-                        : 'bg-gray-100 text-black hover:bg-gray-200 border border-gray-300'
+                        ? 'bg-primary text-black shadow-md'
+                        : 'bg-secondary text-foreground hover:bg-secondary-hover border border-border'
                     }`}
                   >
                     Dépassements
@@ -515,14 +515,14 @@ export default function HistoryPage() {
               {sortedMeetings.map((meeting) => (
               <div
                 key={meeting.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                className="bg-surface rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
                       {meeting.name}
                     </h3>
-                    <div className="flex flex-wrap gap-6 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-6 text-sm text-foreground-secondary">
                       <div className="flex items-center gap-1">
                         <Clock size={16} />
                         <span>Durée: {formatTime(meeting.totalDuration)}</span>
@@ -548,13 +548,13 @@ export default function HistoryPage() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="text-sm text-gray-500 text-right">
+                    <div className="text-sm text-foreground-muted text-right">
                       <p>Début: {formatDate(meeting.startTime)}</p>
                       <p>Fin: {formatDate(meeting.endTime)}</p>
                     </div>
                     <button
                       onClick={() => setSelectedMeeting(meeting)}
-                      className="bg-yellow-500 text-black px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center gap-2"
+                      className="bg-primary text-black px-4 py-2 rounded-lg font-medium hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 flex items-center gap-2"
                     >
                       <Eye size={16} />
                       Voir détails
@@ -573,25 +573,25 @@ export default function HistoryPage() {
         {/* Import Dialog */}
         {showImportDialog && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
+            <div className="bg-surface rounded-lg shadow-xl p-6 max-w-md w-full">
               <div className="flex items-center gap-3 mb-4">
                 <FileJson size={24} className="text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-800">{t('import.title')}</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t('import.title')}</h3>
               </div>
 
               <div className="mb-6">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                  <div className="flex items-center gap-2 text-red-800 mb-2">
+                <div className="bg-error/10 border border-error/20 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-2 text-error mb-2">
                     <AlertTriangle size={16} />
                     <span className="font-medium">{t('import.warning')}</span>
                   </div>
-                  <p className="text-sm text-red-700">
+                  <p className="text-sm text-error">
                     {t('import.warningText')}
                   </p>
                   <ul className="text-sm text-red-700 mt-2 ml-4 list-disc">
-                    <li>{t('import.warningItems.participants')}</li>
-                    <li>{t('import.warningItems.history')}</li>
-                    <li>{t('import.warningItems.settings')}</li>
+                    <li className="text-error">{t('import.warningItems.participants')}</li>
+                    <li className="text-error">{t('import.warningItems.history')}</li>
+                    <li className="text-error">{t('import.warningItems.settings')}</li>
                   </ul>
                   <p className="text-sm text-red-700 mt-2">
                     {t('import.irreversible')}
@@ -599,16 +599,16 @@ export default function HistoryPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-foreground-secondary">
                     {t('import.selectFile')}
                   </label>
                   <input
                     type="file"
                     accept=".json"
                     onChange={handleImportFile}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 focus:outline-none"
+                    className="block w-full text-sm text-foreground-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 focus:outline-none"
                   />
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-foreground-muted">
                     {t('import.acceptedFormat')}
                   </p>
                 </div>
@@ -617,7 +617,7 @@ export default function HistoryPage() {
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowImportDialog(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                  className="px-4 py-2 text-foreground-secondary bg-secondary rounded-lg font-medium hover:bg-secondary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
                 >
                   {t('import.cancel')}
                 </button>
@@ -633,12 +633,12 @@ export default function HistoryPage() {
 const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeeting[], onSelectMeeting: (meeting: HistoricalMeeting) => void }) => {
   if (meetings.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-12 text-center">
-        <BarChart3 size={64} className="text-gray-400 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+      <div className="bg-surface rounded-lg shadow-md p-12 text-center">
+        <BarChart3 size={64} className="text-foreground-muted mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-foreground-secondary mb-2">
           Aucune donnée disponible
         </h2>
-        <p className="text-gray-500">
+        <p className="text-foreground-muted">
           Terminez quelques réunions pour voir les statistiques.
         </p>
       </div>
@@ -698,27 +698,27 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
     <div className="space-y-8">
       {/* Overall Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <Calendar className="w-12 h-12 text-yellow-500 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Réunions</h3>
-          <p className="text-3xl font-bold text-yellow-600">{totalMeetings}</p>
+        <div className="bg-surface rounded-lg shadow-md p-6 text-center">
+          <Calendar className="w-12 h-12 text-primary mx-auto mb-3" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">Total Réunions</h3>
+          <p className="text-3xl font-bold text-primary">{totalMeetings}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+        <div className="bg-surface rounded-lg shadow-md p-6 text-center">
           <Users className="w-12 h-12 text-green-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Participants Moyens</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">Participants Moyens</h3>
           <p className="text-3xl font-bold text-green-600">{averageParticipants.toFixed(1)}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+        <div className="bg-surface rounded-lg shadow-md p-6 text-center">
           <Clock className="w-12 h-12 text-purple-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Durée Moyenne</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">Durée Moyenne</h3>
           <p className="text-3xl font-bold text-purple-600 font-mono">{formatTime(Math.round(averageDuration))}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+        <div className="bg-surface rounded-lg shadow-md p-6 text-center">
           <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Dépassements</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">Dépassements</h3>
           <p className="text-3xl font-bold text-red-600">
             {meetings.reduce((sum, m) => sum + m.summary.totalOvertimeParticipants, 0)}
           </p>
@@ -727,40 +727,40 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
 
       {/* Meeting Records */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <TrendingUp className="text-yellow-500" size={20} />
+        <div className="bg-surface rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <TrendingUp className="text-primary" size={20} />
             Records de Réunions
           </h3>
           <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
+            <div className="p-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary-hover transition-colors"
                  onClick={() => onSelectMeeting(longestMeeting)}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-800">Plus longue réunion</p>
-                  <p className="text-sm text-gray-600">{longestMeeting.name}</p>
+                  <p className="font-medium text-foreground">Plus longue réunion</p>
+                  <p className="text-sm text-foreground-secondary">{longestMeeting.name}</p>
                 </div>
                 <p className="text-lg font-bold text-blue-600 font-mono">{formatTime(longestMeeting.totalDuration)}</p>
               </div>
             </div>
 
-            <div className="p-4 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+            <div className="p-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary-hover transition-colors"
                  onClick={() => onSelectMeeting(shortestMeeting)}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-800">Plus courte réunion</p>
-                  <p className="text-sm text-gray-600">{shortestMeeting.name}</p>
+                  <p className="font-medium text-foreground">Plus courte réunion</p>
+                  <p className="text-sm text-foreground-secondary">{shortestMeeting.name}</p>
                 </div>
                 <p className="text-lg font-bold text-green-600 font-mono">{formatTime(shortestMeeting.totalDuration)}</p>
               </div>
             </div>
 
-            <div className="p-4 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
+            <div className="p-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary-hover transition-colors"
                  onClick={() => onSelectMeeting(meetingWithMostParticipants)}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-800">Plus de participants</p>
-                  <p className="text-sm text-gray-600">{meetingWithMostParticipants.name}</p>
+                  <p className="font-medium text-foreground">Plus de participants</p>
+                  <p className="text-sm text-foreground-secondary">{meetingWithMostParticipants.name}</p>
                 </div>
                 <p className="text-lg font-bold text-purple-600">{meetingWithMostParticipants.summary.totalParticipants}</p>
               </div>
@@ -769,29 +769,29 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
         </div>
 
         {/* Top Overtime Speakers */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-surface rounded-lg shadow-md p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <AlertTriangle className="text-red-600" size={20} />
             Participants avec Dépassements
           </h3>
           <div className="space-y-3">
             {participantOvertimeStats.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">Aucun dépassement enregistré</p>
+              <p className="text-foreground-muted text-center py-4">Aucun dépassement enregistré</p>
             ) : (
               participantOvertimeStats.map((participant, index) => (
-                <div key={participant.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={participant.name} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-red-100 text-red-800 rounded-full flex items-center justify-center text-sm font-bold">
+                    <span className="w-6 h-6 bg-error/20 text-error rounded-full flex items-center justify-center text-sm font-bold">
                       {index + 1}
                     </span>
                     <div>
-                      <p className="font-medium text-gray-800">{participant.name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-medium text-foreground">{participant.name}</p>
+                      <p className="text-sm text-foreground-secondary">
                         {participant.overtimes} dépassement{participant.overtimes > 1 ? 's' : ''} sur {participant.meetings} réunion{participant.meetings > 1 ? 's' : ''}
                       </p>
                     </div>
                   </div>
-                  <span className="text-red-600 font-bold">
+                  <span className="text-error font-bold">
                     {participant.overtimeRate.toFixed(1)}%
                   </span>
                 </div>
@@ -802,20 +802,20 @@ const DashboardView = ({ meetings, onSelectMeeting }: { meetings: HistoricalMeet
       </div>
 
       {/* Recent Meetings Quick Access */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Calendar className="text-yellow-500" size={20} />
+      <div className="bg-surface rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Calendar className="text-primary" size={20} />
           Réunions Récentes
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {meetings.slice(0, 6).map((meeting) => (
             <div
               key={meeting.id}
-              className="p-4 border border-gray-200 rounded-lg hover:border-yellow-300 hover:shadow-md transition-all cursor-pointer"
+              className="p-4 border border-border rounded-lg hover:border-primary hover:shadow-md transition-all cursor-pointer"
               onClick={() => onSelectMeeting(meeting)}
             >
-              <h4 className="font-medium text-gray-800 mb-2 truncate">{meeting.name}</h4>
-              <div className="space-y-1 text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-2 truncate">{meeting.name}</h4>
+              <div className="space-y-1 text-sm text-foreground-secondary">
                 <div className="flex items-center gap-2">
                   <Users size={14} />
                   <span>{meeting.summary.totalParticipants} participants</span>

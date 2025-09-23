@@ -46,11 +46,11 @@ export const ParticipantTable = () => {
 
   if (participants.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <div className="bg-surface rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold mb-4 text-foreground">
           Participants
         </h2>
-        <p className="text-gray-500 text-center py-8">
+        <p className="text-foreground-muted text-center py-8">
           Aucun participant ajouté
         </p>
       </div>
@@ -58,40 +58,40 @@ export const ParticipantTable = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+    <div className="bg-surface rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold mb-4 text-foreground">
         Participants ({participants.length})
       </h2>
 
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-2 font-medium text-gray-700">
+            <tr className="border-b border-border">
+              <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                 Présent
               </th>
-              <th className="text-left py-3 px-2 font-medium text-gray-700">
+              <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                 Nom
               </th>
-              <th className="text-left py-3 px-2 font-medium text-gray-700">
+              <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                 Temps alloué
               </th>
-              <th className="text-left py-3 px-2 font-medium text-gray-700">
+              <th className="text-left py-3 px-2 font-medium text-foreground-secondary">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
             {participants.map((participant) => (
-              <tr key={participant.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <tr key={participant.id} className="border-b border-border hover:bg-surface-hover">
                 <td className="py-3 px-2">
                   <button
                     onClick={() => !isDisabled && toggleParticipantPresence(participant.id)}
                     disabled={isDisabled}
                     className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
                       participant.isPresent
-                        ? 'bg-green-500 border-green-500 text-white'
-                        : 'border-gray-300 hover:border-green-400'
+                        ? 'bg-success border-success text-white'
+                        : 'border-border hover:border-success'
                     } ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                   >
                     {participant.isPresent && <Check size={16} />}
@@ -103,7 +103,7 @@ export const ParticipantTable = () => {
                       type="text"
                       value={editingName}
                       onChange={(e) => setEditingName(e.target.value)}
-                      className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                      className="w-full px-2 py-1 border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') saveEditing(participant.id);
@@ -114,7 +114,7 @@ export const ParticipantTable = () => {
                     <button
                       onClick={() => startEditing(participant.id, participant.name, participant.allocatedTime)}
                       disabled={isDisabled}
-                      className={`text-left text-gray-900 ${isDisabled ? 'cursor-not-allowed' : 'hover:text-blue-600 cursor-pointer'}`}
+                      className={`text-left text-foreground ${isDisabled ? 'cursor-not-allowed' : 'hover:text-primary cursor-pointer'}`}
                     >
                       {participant.name}
                     </button>
@@ -126,7 +126,7 @@ export const ParticipantTable = () => {
                       type="text"
                       value={editingTime}
                       onChange={(e) => setEditingTime(e.target.value)}
-                      className="w-20 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                      className="w-20 px-2 py-1 border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                       pattern="^\d{2}:\d{2}$"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') saveEditing(participant.id);
@@ -137,7 +137,7 @@ export const ParticipantTable = () => {
                     <button
                       onClick={() => startEditing(participant.id, participant.name, participant.allocatedTime)}
                       disabled={isDisabled}
-                      className={`font-mono text-gray-900 ${isDisabled ? 'cursor-not-allowed' : 'hover:text-blue-600 cursor-pointer'}`}
+                      className={`font-mono text-foreground ${isDisabled ? 'cursor-not-allowed' : 'hover:text-primary cursor-pointer'}`}
                     >
                       {formatTimeInput(participant.allocatedTime)}
                     </button>
@@ -149,14 +149,14 @@ export const ParticipantTable = () => {
                       <>
                         <button
                           onClick={() => saveEditing(participant.id)}
-                          className="text-green-600 hover:text-green-700 p-1"
+                          className="text-success hover:text-success p-1"
                           title="Sauvegarder"
                         >
                           <Check size={16} />
                         </button>
                         <button
                           onClick={cancelEditing}
-                          className="text-gray-600 hover:text-gray-700 p-1"
+                          className="text-foreground-muted hover:text-foreground-secondary p-1"
                           title="Annuler"
                         >
                           <X size={16} />
@@ -166,7 +166,7 @@ export const ParticipantTable = () => {
                       <button
                         onClick={() => removeParticipant(participant.id)}
                         disabled={isDisabled}
-                        className="text-red-600 hover:text-red-700 p-1 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        className="text-error hover:text-error p-1 disabled:text-gray-400 disabled:cursor-not-allowed"
                         title="Supprimer"
                       >
                         <Trash2 size={16} />

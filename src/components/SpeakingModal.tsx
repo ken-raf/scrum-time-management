@@ -86,7 +86,7 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full max-h-screen overflow-y-auto"
+            className="bg-surface rounded-lg shadow-xl p-8 max-w-md w-full max-h-screen overflow-y-auto"
           >
             <div className="text-center">
               {/* Participant Info */}
@@ -94,10 +94,10 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
                 <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User size={40} className="text-yellow-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                <h2 className="text-2xl font-bold text-foreground mb-2">
                   {participant.name}
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-foreground-secondary">
                   Temps alloué : {formatTime(participant.allocatedTime)}
                 </p>
               </div>
@@ -105,7 +105,7 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
               {/* Timer Display */}
               <div className="mb-8">
                 <div className={`text-6xl font-mono font-bold mb-4 ${
-                  isOvertime ? 'text-red-600' : 'text-gray-800'
+                  isOvertime ? 'text-red-600' : 'text-foreground'
                 }`}>
                   <motion.div
                     animate={isOvertime ? {
@@ -125,7 +125,7 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
                 {/* Status Indicators */}
                 <div className="space-y-2">
                   {!isSpeaking && (
-                    <div className="flex items-center justify-center gap-2 text-gray-600">
+                    <div className="flex items-center justify-center gap-2 text-foreground-secondary">
                       <Clock size={16} />
                       <span className="text-sm">Prêt à commencer</span>
                     </div>
@@ -184,8 +184,8 @@ export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: Speaki
                   disabled={isSpeaking}
                   className={`w-full py-2 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                     isSpeaking
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-gray-300 text-gray-700 hover:bg-gray-400 focus:ring-gray-500'
+                      ? 'bg-secondary text-foreground-muted cursor-not-allowed'
+                      : 'bg-secondary-hover text-foreground-secondary hover:bg-border-hover focus:ring-primary'
                   }`}
                 >
                   Fermer

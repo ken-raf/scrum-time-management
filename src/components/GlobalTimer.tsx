@@ -18,12 +18,12 @@ export const GlobalTimer = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+    <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
       <div className="flex items-center justify-center gap-3">
-        <Clock size={24} className="text-blue-600" />
+        <Clock size={24} className="text-primary" />
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-1">Durée de la réunion</p>
-          <p className="text-2xl font-mono font-bold text-gray-800">
+          <p className="text-sm text-foreground-secondary mb-1">Durée de la réunion</p>
+          <p className="text-2xl font-mono font-bold text-foreground">
             {formatTime(globalTimer)}
           </p>
         </div>

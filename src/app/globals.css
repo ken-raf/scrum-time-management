@@ -1,42 +1,116 @@
 @import "tailwindcss";
 
+/* Theme CSS Variables - Will be dynamically updated by ThemeProvider */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Legacy variables for backward compatibility */
+  --background: var(--theme-background, #ffffff);
+  --foreground: var(--theme-foreground, #171717);
+
+  /* Theme variables - set dynamically by ThemeContext */
+  --theme-background: #ffffff;
+  --theme-surface: #f8fafc;
+  --theme-surface-hover: #f1f5f9;
+  --theme-foreground: #1e293b;
+  --theme-foreground-secondary: #1e293b;
+  --theme-foreground-muted: #64748b;
+  --theme-primary: #3b82f6;
+  --theme-primary-hover: #2563eb;
+  --theme-primary-foreground: #ffffff;
+  --theme-secondary: #e2e8f0;
+  --theme-secondary-hover: #cbd5e1;
+  --theme-secondary-foreground: #b8bdc4ff;
+  --theme-border: #e2e8f0;
+  --theme-border-hover: #cbd5e1;
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+  --theme-info: #3b82f6;
+  --theme-gradient-from: #dbeafe;
+  --theme-gradient-to: #e0e7ff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--theme-background);
+  --color-surface: var(--theme-surface);
+  --color-surface-hover: var(--theme-surface-hover);
+  --color-foreground: var(--theme-foreground);
+  --color-foreground-secondary: var(--theme-foreground-secondary);
+  --color-foreground-muted: var(--theme-foreground-muted);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-primary-foreground: var(--theme-primary-foreground);
+  --color-secondary: var(--theme-secondary);
+  --color-secondary-hover: var(--theme-secondary-hover);
+  --color-secondary-foreground: var(--theme-secondary-foreground);
+  --color-border: var(--theme-border);
+  --color-border-hover: var(--theme-border-hover);
+  --color-success: var(--theme-success);
+  --color-warning: var(--theme-warning);
+  --color-error: var(--theme-error);
+  --color-info: var(--theme-info);
+  --color-gradient-from: var(--theme-gradient-from);
+  --color-gradient-to: var(--theme-gradient-to);
   --font-sans: "Lucida Console", "Courier New", monospace;
   --font-mono: "Lucida Console", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--theme-background);
+  color: var(--theme-foreground);
   font-family: "Lucida Console", "Courier New", monospace;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  zoom: 90%;
 }
 
-/* Fix input text colors */
+/* Theme-aware input colors */
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
-  color: #1f2937 !important;
+  background-color: var(--theme-surface);
+  color: var(--theme-foreground);
+  border-color: var(--theme-border);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+  border-color: var(--theme-primary);
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
 }
 
 input[type="text"]:disabled, input[type="email"]:disabled, input[type="password"]:disabled, input[type="number"]:disabled, textarea:disabled, select:disabled {
-  color: #9ca3af !important;
-  background-color: #f3f4f6 !important;
+  color: var(--theme-foreground-muted) !important;
+  background-color: var(--theme-surface-hover) !important;
+  border-color: var(--theme-border) !important;
 }
 
-/* Ensure table text is properly colored */
+/* Theme-aware table colors */
 table td, table th {
-  color: #1f2937;
+  color: var(--theme-foreground);
+  border-color: var(--theme-border);
+}
+
+/* Theme-aware scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-foreground-muted);
+}
+
+/* Theme transition for all elements */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
