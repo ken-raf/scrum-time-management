@@ -8,6 +8,7 @@ import { formatTime } from '@/utils/time';
 import { ParticipantAvatar } from '@/components/avatar/ParticipantAvatar';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { MeetingControls } from '@/components/MeetingControls';
+import { DailyFactCard } from '@/components/DailyFact';
 
 export const MeetingSummary = () => {
   const t = useTranslations('summary');
@@ -58,46 +59,50 @@ export const MeetingSummary = () => {
         </div>
       </div>
 
-      <div className="card flex flex-col p-5 sm:p-6 lg:h-full lg:min-h-0">
-        <h3 className="mb-4 text-lg font-semibold tracking-tight">{t('participantDetails')}</h3>
-        <ul className="-mr-2 grid content-start gap-3 overflow-y-auto pr-2 lg:min-h-0 lg:flex-1">
-          {present.map((p, i) => {
-            const spoken = p.actualTime !== undefined;
-            const used = p.actualTime ?? 0;
-            const late = used > p.allocatedTime;
-            const diff = used - p.allocatedTime;
-            return (
-              <li key={p.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
-                <ParticipantAvatar participant={p} size={38} />
-                <div className="min-w-0">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate font-medium">{p.name}</span>
-                    <span className="font-mono text-xs text-foreground-muted tabular">
-                      {spoken ? formatTime(used) : '—'} / {formatTime(p.allocatedTime)}
-                    </span>
+      {/* Right column: per-person detail (scrolls inside if long) above the day's "Le saviez-vous ?". */}
+      <div className="flex flex-col gap-4 lg:h-full lg:min-h-0">
+        <div className="card flex flex-col p-5 sm:p-6 lg:min-h-0 lg:flex-1">
+          <h3 className="mb-4 text-lg font-semibold tracking-tight">{t('participantDetails')}</h3>
+          <ul className="-mr-2 grid content-start gap-3 overflow-y-auto pr-2 lg:min-h-0 lg:flex-1">
+            {present.map((p, i) => {
+              const spoken = p.actualTime !== undefined;
+              const used = p.actualTime ?? 0;
+              const late = used > p.allocatedTime;
+              const diff = used - p.allocatedTime;
+              return (
+                <li key={p.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+                  <ParticipantAvatar participant={p} size={38} />
+                  <div className="min-w-0">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="truncate font-medium">{p.name}</span>
+                      <span className="font-mono text-xs text-foreground-muted tabular">
+                        {spoken ? formatTime(used) : '—'} / {formatTime(p.allocatedTime)}
+                      </span>
+                    </div>
+                    <div className="relative mt-1.5 h-2 overflow-hidden rounded-full bg-surface-hover">
+                      <div className="absolute inset-y-0 left-0 rounded-full bg-white/10" style={{ width: `${(p.allocatedTime / maxTime) * 100}%` }} />
+                      <motion.div
+                        className={clsx('absolute inset-y-0 left-0 rounded-full', late ? 'bg-error' : 'bg-success')}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(used / maxTime) * 100}%` }}
+                        transition={{ type: 'spring', stiffness: 90, damping: 16, delay: 0.3 + i * 0.06 }}
+                      />
+                    </div>
                   </div>
-                  <div className="relative mt-1.5 h-2 overflow-hidden rounded-full bg-surface-hover">
-                    <div className="absolute inset-y-0 left-0 rounded-full bg-white/10" style={{ width: `${(p.allocatedTime / maxTime) * 100}%` }} />
-                    <motion.div
-                      className={clsx('absolute inset-y-0 left-0 rounded-full', late ? 'bg-error' : 'bg-success')}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(used / maxTime) * 100}%` }}
-                      transition={{ type: 'spring', stiffness: 90, damping: 16, delay: 0.3 + i * 0.06 }}
-                    />
-                  </div>
-                </div>
-                <span
-                  className={clsx(
-                    'w-[7.5rem] rounded-full px-2 py-0.5 text-center font-mono text-xs tabular',
-                    !spoken ? 'bg-white/5 text-foreground-muted' : late ? 'bg-error/15 text-error' : 'bg-success/15 text-success'
-                  )}
-                >
-                  {!spoken ? t('didNotSpeak') : diff > 0 ? `+${formatTime(diff)}` : diff < 0 ? `-${formatTime(-diff)}` : '±00:00'}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+                  <span
+                    className={clsx(
+                      'w-[7.5rem] rounded-full px-2 py-0.5 text-center font-mono text-xs tabular',
+                      !spoken ? 'bg-white/5 text-foreground-muted' : late ? 'bg-error/15 text-error' : 'bg-success/15 text-success'
+                    )}
+                  >
+                    {!spoken ? t('didNotSpeak') : diff > 0 ? `+${formatTime(diff)}` : diff < 0 ? `-${formatTime(-diff)}` : '±00:00'}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <DailyFactCard variant="panel" />
       </div>
     </div>
   );

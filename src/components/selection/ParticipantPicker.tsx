@@ -11,7 +11,8 @@ import { PICKER_MODES, PickerMode, PickerPreference, useSettingsStore } from '@/
 import { participantColor } from '@/lib/avatars';
 import { sfx } from '@/lib/sound';
 import { Avatar } from '@/components/avatar/Avatar';
-import { DailyFact, loadDailyFact } from '@/components/DailyFact';
+import { DailyFact } from '@/components/DailyFact';
+import { useDailyFactStore } from '@/stores/dailyFactStore';
 import type { Participant } from '@/types';
 import { WheelPicker } from './WheelPicker';
 import { ReelPicker } from './ReelPicker';
@@ -124,7 +125,7 @@ export function ParticipantPicker({ onParticipantSelected }: ParticipantPickerPr
 
   // Fetch the end-of-round "Le saviez-vous ?" while the meeting runs, so it is ready instantly.
   useEffect(() => {
-    if (!preview) loadDailyFact(locale).catch(() => undefined);
+    if (!preview) useDailyFactStore.getState().load(locale);
   }, [preview, locale]);
 
   return (
