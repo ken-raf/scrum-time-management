@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Disc3, GalleryHorizontalEnd, Layers, Shuffle, Sparkles as SparklesIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import clsx from 'clsx';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { PICKER_MODES, PickerMode, PickerPreference, useSettingsStore } from '@/stores/settingsStore';
 import { participantColor } from '@/lib/avatars';
 import { sfx } from '@/lib/sound';
 import { Avatar } from '@/components/avatar/Avatar';
+import { DailyFact, loadDailyFact } from '@/components/DailyFact';
 import type { Participant } from '@/types';
 import { WheelPicker } from './WheelPicker';
 import { ReelPicker } from './ReelPicker';
@@ -35,6 +37,7 @@ interface ParticipantPickerProps {
 
 export function ParticipantPicker({ onParticipantSelected }: ParticipantPickerProps) {
   const t = useTranslations('picker');
+  const locale = useLocale();
   const reduced = useReducedMotion();
   const participants = useMeetingStore((s) => s.participants);
   const meetingState = useMeetingStore((s) => s.meetingState);
@@ -119,6 +122,11 @@ export function ParticipantPicker({ onParticipantSelected }: ParticipantPickerPr
   const ModeIcon = MODE_ICONS[mode];
   const allSpoken = !preview && present.length > 0 && available.length === 0 && phase !== 'revealed';
 
+  // Fetch the end-of-round "Le saviez-vous ?" while the meeting runs, so it is ready instantly.
+  useEffect(() => {
+    if (!preview) loadDailyFact(locale).catch(() => undefined);
+  }, [preview, locale]);
+
   return (
     <div className="flex flex-col gap-4 lg:h-full lg:min-h-0">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -145,18 +153,23 @@ export function ParticipantPicker({ onParticipantSelected }: ParticipantPickerPr
         </span>
       </div>
 
-      <div className="stage h-[360px] sm:h-[420px] lg:h-auto lg:min-h-0 lg:flex-1">
+      <div className={clsx('stage lg:h-auto lg:min-h-0 lg:flex-1', allSpoken ? 'min-h-[360px]' : 'h-[360px] sm:h-[420px]')}>
         <div className="stage-grid" />
-        <div className="absolute left-5 top-4 z-40 flex items-center gap-2 eyebrow">
-          <ModeIcon size={13} />
-          {t(`modes.${mode}`)}
-          {preference === 'random' && <span className="rounded-full bg-white/5 px-2 py-0.5 normal-case tracking-normal">{t('modes.random')}</span>}
-        </div>
+        {!allSpoken && (
+          <div className="absolute left-5 top-4 z-40 flex items-center gap-2 eyebrow">
+            <ModeIcon size={13} />
+            {t(`modes.${mode}`)}
+            {preference === 'random' && <span className="rounded-full bg-white/5 px-2 py-0.5 normal-case tracking-normal">{t('modes.random')}</span>}
+          </div>
+        )}
 
         {present.length === 0 ? (
           <EmptyStage title={t('noneTitle')} body={t('noneBody')} />
         ) : allSpoken ? (
-          <EmptyStage title={t('allSpokenTitle')} body={t('allSpokenBody')} participants={present} />
+          <DailyFact
+            participants={present}
+            fallback={<EmptyStage title={t('allSpokenTitle')} body={t('allSpokenBody')} participants={present} />}
+          />
         ) : (
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

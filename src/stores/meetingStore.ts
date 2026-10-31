@@ -40,6 +40,14 @@ interface MeetingStore {
   resetMeeting: () => void;
 }
 
+const LEGACY_MEDIA_KEYS = [
+  'mediaPlayerVolume',
+  'lastPlayedMedia',
+  'lastPlayedMediaData',
+  'lastPlayedMediaType',
+  'lastPlayedIsVideo',
+];
+
 const initialMeetingState: MeetingState = {
   isStarted: false,
   isFinished: false,
@@ -313,8 +321,16 @@ export const useMeetingStore = create<MeetingStore>()(
       version: 1,
       migrate: (persisted, version) => {
         const state = persisted as Partial<MeetingStore>;
-        if (version < 1 && Array.isArray(state.participants)) {
-          state.participants = withAvatars(state.participants);
+        if (version < 1) {
+          if (Array.isArray(state.participants)) {
+            state.participants = withAvatars(state.participants);
+          }
+          // The music player is gone: drop the keys it left behind.
+          try {
+            for (const key of LEGACY_MEDIA_KEYS) localStorage.removeItem(key);
+          } catch {
+            // Storage unavailable: nothing to clean
+          }
         }
         return state as MeetingStore;
       },

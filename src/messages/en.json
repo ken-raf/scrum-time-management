@@ -221,5 +221,19 @@
     "previewEyebrow": "Preview",
     "previewTitle": "The draw",
     "previewBody": "Pick an animation, or leave it on Random to get a new one every turn."
+  },
+  "dailyFact": {
+    "allSpoken": "Everyone has spoken!",
+    "intro": "A quick culture break before wrapping up.",
+    "eyebrow": "Did you know?",
+    "question": "What year was it?",
+    "another": "Another question",
+    "correct": "Well done!",
+    "wrong": "Not quite! It was {year}.",
+    "ago": "{count, plural, one {# year ago} other {# years ago}}",
+    "readMore": "Read on Wikipedia",
+    "source": "Source: Wikipedia, On this day (CC BY-SA)",
+    "loading": "Finding today's story…",
+    "hidden": "hidden year"
   }
 }

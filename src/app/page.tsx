@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { UserPlus } from 'lucide-react';
@@ -34,6 +34,19 @@ export default function Home() {
   const meetingState = useMeetingStore((s) => s.meetingState);
   const openAdd = useCallback(() => setAddOpen(true), []);
   const closeAdd = useCallback(() => setAddOpen(false), []);
+
+  // After a reload (or an app update) during someone's turn, bring their timer
+  // back instead of leaving the turn frozen with no way to close it.
+  useEffect(() => {
+    const resume = () => {
+      const { meetingState } = useMeetingStore.getState();
+      if (meetingState.isStarted && !meetingState.isFinished && meetingState.currentParticipant) {
+        setSelectedParticipant(meetingState.currentParticipant);
+      }
+    };
+    if (useMeetingStore.persist.hasHydrated()) resume();
+    else return useMeetingStore.persist.onFinishHydration(resume);
+  }, []);
 
   const handleParticipantSelected = (participantId: string) => {
     setSelectedParticipant(participantId);
@@ -101,10 +114,10 @@ export default function Home() {
                 <MeetingControls />
               </div>
               <div className={`${ROW} lg:grid-cols-5`}>
-                <div className="card p-4 sm:p-5 lg:col-span-3 lg:h-full lg:min-h-0">
+                <div className="card min-w-0 p-4 sm:p-5 lg:col-span-3 lg:h-full lg:min-h-0">
                   <ParticipantPicker onParticipantSelected={handleParticipantSelected} />
                 </div>
-                <div className="lg:col-span-2 lg:h-full lg:min-h-0">
+                <div className="min-w-0 lg:col-span-2 lg:h-full lg:min-h-0">
                   <LiveStats />
                 </div>
               </div>

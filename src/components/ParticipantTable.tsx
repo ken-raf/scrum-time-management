@@ -4,7 +4,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Check, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Check, Pencil, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { formatTimeInput, parseTimeInput } from '@/utils/time';
 import { sfx } from '@/lib/sound';
@@ -33,15 +33,21 @@ export const ParticipantTable = ({ onAdd }: { onAdd?: () => void }) => {
     setEditingId(id);
     setEditingName(name);
     setEditingTime(formatTimeInput(allocatedTime));
+    // Editing a participant also offers their animal.
+    setAvatarFor(id);
   };
 
-  const cancelEditing = () => setEditingId(null);
+  const cancelEditing = () => {
+    setEditingId(null);
+    setAvatarFor(null);
+  };
 
   const saveEditing = (id: string) => {
     if (!editingName.trim()) return;
     const allocatedTime = parseTimeInput(editingTime);
     updateParticipant(id, { name: editingName.trim(), ...(allocatedTime > 0 ? { allocatedTime } : {}) });
     setEditingId(null);
+    setAvatarFor(null);
   };
 
   return (
@@ -131,10 +137,24 @@ export const ParticipantTable = ({ onAdd }: { onAdd?: () => void }) => {
                       onClick={() => !isDisabled && setAvatarFor(choosingAvatar ? null : p.id)}
                       disabled={isDisabled}
                       aria-label={t('changeAvatar', { name: p.name })}
+                      title={isDisabled ? undefined : t('changeAvatar', { name: p.name })}
                       aria-expanded={choosingAvatar}
-                      className="flex-none rounded-full transition-transform hover:scale-105 disabled:cursor-default disabled:hover:scale-100"
+                      className="group/av relative flex-none rounded-full transition-transform hover:scale-105 disabled:cursor-default disabled:hover:scale-100"
                     >
                       <ParticipantAvatar participant={p} size={40} />
+                      {!isDisabled && (
+                        <span
+                          aria-hidden
+                          className={clsx(
+                            'absolute -bottom-0.5 -right-0.5 grid h-[18px] w-[18px] place-items-center rounded-full bg-primary text-primary-foreground ring-2 ring-[var(--theme-surface)] transition duration-200',
+                            choosingAvatar
+                              ? 'scale-100 opacity-100'
+                              : 'scale-75 opacity-0 group-hover/av:scale-100 group-hover/av:opacity-100 group-focus-visible/av:scale-100 group-focus-visible/av:opacity-100'
+                          )}
+                        >
+                          <RefreshCw size={10} strokeWidth={3} />
+                        </span>
+                      )}
                     </button>
 
                     {editing ? (
