@@ -221,5 +221,19 @@
     "previewEyebrow": "Aperçu",
     "previewTitle": "Le tirage au sort",
     "previewBody": "Choisissez une animation ou laissez « Aléatoire » en changer à chaque tour."
+  },
+  "dailyFact": {
+    "allSpoken": "Tout le monde a parlé !",
+    "intro": "Petite pause culture avant de clore la réunion.",
+    "eyebrow": "Le saviez-vous ?",
+    "question": "En quelle année ?",
+    "another": "Autre question",
+    "correct": "Bien vu !",
+    "wrong": "Raté ! C'était en {year}.",
+    "ago": "il y a {count, plural, one {# an} other {# ans}}",
+    "readMore": "Lire sur Wikipédia",
+    "source": "Source : Wikipédia, éphéméride du jour (CC BY-SA)",
+    "loading": "Recherche d'une anecdote du jour…",
+    "hidden": "année cachée"
   }
 }

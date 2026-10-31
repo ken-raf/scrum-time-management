@@ -145,4 +145,13 @@ export const sfx = {
   fanfare() {
     [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ freq: f, type: 'triangle', dur: 0.6, vol: 0.08, delay: i * 0.1 }));
   },
+  /** Quiz: right answer. */
+  correct() {
+    [783.99, 1046.5].forEach((f, i) => tone({ freq: f, type: 'triangle', dur: 0.32, vol: 0.08, delay: i * 0.09 }));
+  },
+  /** Quiz: wrong answer, a soft falling buzz. */
+  miss() {
+    tone({ freq: 330, to: 220, type: 'triangle', dur: 0.2, vol: 0.08 });
+    tone({ freq: 247, to: 165, type: 'triangle', dur: 0.26, vol: 0.06, delay: 0.15 });
+  },
 };
