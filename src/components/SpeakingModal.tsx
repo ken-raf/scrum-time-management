@@ -1,199 +1,146 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-// import { useTranslations } from 'next-intl';
-import { useLanguage } from '@/components/ClientIntlProvider';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { Play, Square, X } from 'lucide-react';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useTimer } from '@/hooks/useTimer';
 import { formatTime } from '@/utils/time';
-import { Play, Square, User, Clock, AlertTriangle } from 'lucide-react';
+import { sfx } from '@/lib/sound';
+import { Avatar } from '@/components/avatar/Avatar';
+import { TimerDial } from '@/components/timer/TimerDial';
+import type { AvatarMood } from '@/lib/avatars';
 
 interface SpeakingModalProps {
   isOpen: boolean;
   participantId: string;
   onClose: () => void;
-  onNext: () => void;
 }
 
-export const SpeakingModal = ({ isOpen, participantId, onClose, onNext }: SpeakingModalProps) => {
-  // const t = useTranslations();
-  const { locale } = useLanguage();
-  const {
-    participants,
-    currentSpeakingTime,
-    isSpeaking,
-    startSpeaking,
-    stopSpeaking,
-    incrementSpeakingTimer,
-    resetCurrentSpeakingTime
-  } = useMeetingStore();
+export const SpeakingModal = ({ isOpen, participantId, onClose }: SpeakingModalProps) => {
+  const t = useTranslations('timer');
+  const participants = useMeetingStore((s) => s.participants);
+  const currentSpeakingTime = useMeetingStore((s) => s.currentSpeakingTime);
+  const isSpeaking = useMeetingStore((s) => s.isSpeaking);
+  const startSpeaking = useMeetingStore((s) => s.startSpeaking);
+  const stopSpeaking = useMeetingStore((s) => s.stopSpeaking);
+  const incrementSpeakingTimer = useMeetingStore((s) => s.incrementSpeakingTimer);
+  const resetCurrentSpeakingTime = useMeetingStore((s) => s.resetCurrentSpeakingTime);
+  const [finished, setFinished] = useState<{ used: number; name: string } | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const participant = participants.find(p => p.id === participantId);
+  const participant = participants.find((p) => p.id === participantId);
 
   useTimer(isSpeaking, incrementSpeakingTimer);
+
+  useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }, []);
+
+  // Sound cues while the speaker talks.
+  useEffect(() => {
+    if (!isSpeaking || !participant || currentSpeakingTime === 0) return;
+    const alloc = participant.allocatedTime;
+    const remaining = alloc - currentSpeakingTime;
+    const warnAt = Math.max(1, Math.ceil(alloc * 0.75));
+    if (currentSpeakingTime === warnAt && remaining > 10) sfx.warning();
+    else if (remaining > 0 && remaining <= 10) sfx.countdown();
+    else if (remaining === 0) sfx.overtime();
+    else if (remaining < 0 && -remaining % 30 === 0) sfx.overtime();
+  }, [currentSpeakingTime, isSpeaking, participant]);
+
+  // Escape closes the modal before the turn starts.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isSpeaking && !finished) onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, isSpeaking, finished, onClose]);
 
   if (!participant) return null;
 
   const isOvertime = currentSpeakingTime > participant.allocatedTime;
-  const remainingTime = participant.allocatedTime - currentSpeakingTime;
-
-  // Text-to-speech thank you function
-  const speakThankYou = (participantName: string) => {
-    try {
-      if ('speechSynthesis' in window) {
-        // Cancel any ongoing speech
-        speechSynthesis.cancel();
-
-        // Create the thank you message based on locale
-        const thankYouText = locale === 'fr'
-          ? `Merci ${participantName}`
-          : `Thank you ${participantName}`;
-
-        const utterance = new SpeechSynthesisUtterance(thankYouText);
-
-        // Set language based on current locale
-        utterance.lang = locale === 'fr' ? 'fr-FR' : 'en-US';
-        utterance.rate = 0.9;
-        utterance.volume = 0.8;
-
-        // Speak immediately
-        speechSynthesis.speak(utterance);
-      }
-    } catch (error) {
-      console.warn('Text-to-speech not available:', error);
-    }
-  };
 
   const handleStart = () => {
     resetCurrentSpeakingTime();
     startSpeaking(participantId);
+    sfx.start();
   };
 
-  const handleStop = () => {
-    // Play thank you message before stopping
-    speakThankYou(participant.name);
-
+  const handleFinish = () => {
+    const used = currentSpeakingTime;
     stopSpeaking();
-    onNext();
-    onClose();
+    setFinished({ used, name: participant.name });
+    sfx.finish();
+    closeTimer.current = setTimeout(onClose, 2400);
   };
+
+  let mood: AvatarMood = 'selected';
+  if (finished) mood = finished.used > participant.allocatedTime ? 'doneLate' : 'done';
+  else if (isSpeaking) mood = isOvertime ? 'overtime' : 'speaking';
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="speaking-title"
+        >
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-surface rounded-lg shadow-xl p-8 max-w-md w-full max-h-screen overflow-y-auto"
+            initial={{ scale: 0.92, y: 24, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.95, y: 12, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+            className="card relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto p-6 shadow-[0_40px_120px_-30px_rgba(0,0,0,.9)] sm:p-8"
+            style={{ background: 'radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--theme-primary) 10%, var(--theme-surface)) 0%, var(--theme-surface) 65%)' }}
           >
-            <div className="text-center">
-              {/* Participant Info */}
-              <div className="mb-8">
-                <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User size={40} className="text-yellow-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">
+            <div className="mb-4 flex items-center gap-4">
+              <Avatar avatarId={participant.avatar} seed={participant.id} mood={mood} size={72} />
+              <div className="min-w-0 flex-1">
+                <h2 id="speaking-title" className="truncate text-2xl font-semibold tracking-tight">
                   {participant.name}
                 </h2>
-                <p className="text-foreground-secondary">
-                  Temps alloué : {formatTime(participant.allocatedTime)}
+                <p className="text-sm text-foreground-muted">
+                  {t('allocatedTime')} <span className="font-mono tabular">{formatTime(participant.allocatedTime)}</span>
                 </p>
               </div>
-
-              {/* Timer Display */}
-              <div className="mb-8">
-                <div className={`text-6xl font-mono font-bold mb-4 ${
-                  isOvertime ? 'text-red-600' : 'text-foreground'
-                }`}>
-                  <motion.div
-                    animate={isOvertime ? {
-                      scale: [1, 1.05, 1],
-                      rotate: [0, 1, -1, 0]
-                    } : {}}
-                    transition={isOvertime ? {
-                      duration: 0.5,
-                      repeat: Infinity,
-                      repeatType: "reverse"
-                    } : {}}
-                  >
-                    {formatTime(currentSpeakingTime)}
-                  </motion.div>
-                </div>
-
-                {/* Status Indicators */}
-                <div className="space-y-2">
-                  {!isSpeaking && (
-                    <div className="flex items-center justify-center gap-2 text-foreground-secondary">
-                      <Clock size={16} />
-                      <span className="text-sm">Prêt à commencer</span>
-                    </div>
-                  )}
-
-                  {isSpeaking && !isOvertime && (
-                    <div className="flex items-center justify-center gap-2 text-green-600">
-                      <Clock size={16} />
-                      <span className="text-sm">
-                        Temps restant : {formatTime(Math.max(0, remainingTime))}
-                      </span>
-                    </div>
-                  )}
-
-                  {isOvertime && (
-                    <motion.div
-                      className="flex items-center justify-center gap-2 text-red-600"
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                    >
-                      <AlertTriangle size={16} />
-                      <span className="text-sm font-semibold">
-                        Temps dépassé de {formatTime(currentSpeakingTime - participant.allocatedTime)}
-                      </span>
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="space-y-4">
-                {!isSpeaking ? (
-                  <button
-                    onClick={handleStart}
-                    className="w-full bg-success text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-success/90 focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 flex items-center justify-center gap-3"
-                  >
-                    <Play size={24} />
-                    Commencer
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleStop}
-                    className={`w-full py-4 px-6 rounded-lg font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-3 ${
-                      isOvertime
-                        ? 'bg-error text-white hover:bg-error/90 focus:ring-error'
-                        : 'bg-primary text-primary-foreground hover:bg-primary-hover focus:ring-primary'
-                    }`}
-                  >
-                    <Square size={24} />
-                    Terminer
-                  </button>
-                )}
-
-                <button
-                  onClick={onClose}
-                  disabled={isSpeaking}
-                  className={`w-full py-2 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                    isSpeaking
-                      ? 'bg-secondary text-foreground-muted cursor-not-allowed'
-                      : 'bg-secondary-hover text-foreground-secondary hover:bg-border-hover focus:ring-primary'
-                  }`}
-                >
-                  Fermer
+              {!isSpeaking && !finished && (
+                <button type="button" onClick={onClose} className="btn btn-ghost btn-icon" aria-label={t('close')}>
+                  <X size={18} />
                 </button>
-              </div>
+              )}
+            </div>
+
+            <TimerDial
+              elapsed={finished ? finished.used : currentSpeakingTime}
+              allocated={participant.allocatedTime}
+              running={isSpeaking}
+              finished={finished}
+            />
+
+            <div className="mt-6 grid gap-3">
+              {finished ? null : !isSpeaking ? (
+                <button type="button" onClick={handleStart} className="btn btn-primary btn-lg w-full">
+                  <Play size={20} />
+                  {t('start')}
+                </button>
+              ) : (
+                <button type="button" onClick={handleFinish} className={`btn btn-lg w-full ${isOvertime ? 'btn-danger' : 'btn-primary'}`}>
+                  <Square size={18} />
+                  {t('finish')}
+                </button>
+              )}
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

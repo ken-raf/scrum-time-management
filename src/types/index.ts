@@ -4,6 +4,7 @@ export interface Participant {
   allocatedTime: number; // in seconds
   isPresent: boolean;
   actualTime?: number; // time actually used in seconds
+  avatar?: string; // avatar preset id (see lib/avatars)
 }
 
 export interface MeetingState {

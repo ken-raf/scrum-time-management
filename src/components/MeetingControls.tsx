@@ -1,82 +1,70 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+import { Play, RotateCcw, Square } from 'lucide-react';
 import { useMeetingStore } from '@/stores/meetingStore';
-import { Play, Square, RotateCcw } from 'lucide-react';
+import { sfx } from '@/lib/sound';
 
 interface MeetingControlsProps {
   onNewMeeting?: () => void;
 }
 
 export const MeetingControls = ({ onNewMeeting }: MeetingControlsProps) => {
-  const {
-    meetingState,
-    startMeeting,
-    endMeeting,
-    resetMeeting,
-    participants
-  } = useMeetingStore();
+  const t = useTranslations('meeting');
+  const meetingState = useMeetingStore((s) => s.meetingState);
+  const startMeeting = useMeetingStore((s) => s.startMeeting);
+  const endMeeting = useMeetingStore((s) => s.endMeeting);
+  const resetMeeting = useMeetingStore((s) => s.resetMeeting);
+  const participants = useMeetingStore((s) => s.participants);
 
-  const presentParticipants = participants.filter(p => p.isPresent);
-  const canStartMeeting = presentParticipants.length > 0 && !meetingState.isStarted;
-
-  const handleStartMeeting = () => {
-    if (canStartMeeting) {
-      startMeeting();
-    }
-  };
-
-  const handleEndMeeting = () => {
-    endMeeting();
-    // Summary will be shown automatically via useEffect in main component
-  };
-
-  const handleResetMeeting = () => {
-    resetMeeting();
-  };
+  const presentCount = participants.filter((p) => p.isPresent).length;
+  const canStartMeeting = presentCount > 0 && !meetingState.isStarted;
 
   if (meetingState.isFinished) {
     return (
-      <div className="flex justify-center">
-        <button
-          onClick={onNewMeeting || handleResetMeeting}
-          className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center gap-2"
-        >
-          <RotateCcw size={20} />
-          Nouvelle réunion
-        </button>
-      </div>
+      <button type="button" onClick={onNewMeeting || resetMeeting} className="btn btn-primary btn-lg">
+        <RotateCcw size={18} />
+        {t('newMeeting')}
+      </button>
+    );
+  }
+
+  if (!meetingState.isStarted) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          if (!canStartMeeting) return;
+          startMeeting();
+          sfx.start();
+        }}
+        disabled={!canStartMeeting}
+        title={canStartMeeting ? undefined : t('startHint')}
+        className="btn btn-primary"
+      >
+        <Play size={18} />
+        {t('startMeeting')}
+      </button>
     );
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-      {!meetingState.isStarted ? (
-        <button
-          onClick={handleStartMeeting}
-          disabled={!canStartMeeting}
-          className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:bg-foreground-muted disabled:cursor-not-allowed flex items-center gap-3"
-        >
-          <Play size={24} />
-          Démarrer la réunion
-        </button>
-      ) : (
-        <>
-          <button
-            onClick={handleEndMeeting}
-            className="bg-error text-white px-6 py-3 rounded-lg font-semibold hover:bg-error focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 flex items-center gap-2"
-          >
-            <Square size={20} />
-            Finir la réunion
-          </button>
-          <button
-            onClick={handleResetMeeting}
-            className="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-secondary-hover focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 flex items-center gap-2"
-          >
-            <RotateCcw size={20} />
-            Réinitialiser
-          </button>
-        </>
-      )}
+    <div className="flex flex-wrap gap-2">
+      <button
+        type="button"
+        onClick={() => {
+          endMeeting();
+          sfx.fanfare();
+        }}
+        className="btn btn-danger"
+      >
+        <Square size={16} />
+        {t('endMeeting')}
+      </button>
+      <button type="button" onClick={resetMeeting} className="btn btn-ghost">
+        <RotateCcw size={16} />
+        {t('resetMeeting')}
+      </button>
     </div>
   );
 };

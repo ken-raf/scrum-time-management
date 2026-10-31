@@ -1,44 +1,48 @@
 @import "tailwindcss";
 
-/* Theme CSS Variables - Will be dynamically updated by ThemeProvider */
+/* Theme variables. ThemeContext rewrites them when the palette changes;
+   these defaults match the "blue" palette so the first paint is already right. */
 :root {
-  /* Legacy variables for backward compatibility */
-  --background: var(--theme-background, #ffffff);
-  --foreground: var(--theme-foreground, #171717);
+  --theme-background: #06080f;
+  --theme-surface: #0e1324;
+  --theme-surface-hover: #151c33;
+  --theme-surface-raised: #1a2240;
+  --theme-foreground: #eef1fb;
+  --theme-foreground-secondary: #c4cae0;
+  --theme-foreground-muted: #8890ae;
+  --theme-primary: #7d8cff;
+  --theme-primary-hover: #97a3ff;
+  --theme-primary-foreground: #0a0d1f;
+  --theme-primary-glow: rgba(125, 140, 255, 0.5);
+  --theme-accent-2: #b38bff;
+  --theme-secondary: #151c33;
+  --theme-secondary-hover: #1d2645;
+  --theme-secondary-foreground: #c4cae0;
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-border-hover: rgba(255, 255, 255, 0.16);
+  --theme-success: #3fd6a0;
+  --theme-warning: #f6b84b;
+  --theme-error: #ff5d6c;
+  --theme-info: #7d8cff;
 
-  /* Theme variables - set dynamically by ThemeContext */
-  --theme-background: #ffffff;
-  --theme-surface: #f8fafc;
-  --theme-surface-hover: #f1f5f9;
-  --theme-foreground: #1e293b;
-  --theme-foreground-secondary: #1e293b;
-  --theme-foreground-muted: #64748b;
-  --theme-primary: #3b82f6;
-  --theme-primary-hover: #2563eb;
-  --theme-primary-foreground: #ffffff;
-  --theme-secondary: #e2e8f0;
-  --theme-secondary-hover: #cbd5e1;
-  --theme-secondary-foreground: #b8bdc4ff;
-  --theme-border: #e2e8f0;
-  --theme-border-hover: #cbd5e1;
-  --theme-success: #10b981;
-  --theme-warning: #f59e0b;
-  --theme-error: #ef4444;
-  --theme-info: #3b82f6;
-  --theme-gradient-from: #dbeafe;
-  --theme-gradient-to: #e0e7ff;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--theme-background);
   --color-surface: var(--theme-surface);
   --color-surface-hover: var(--theme-surface-hover);
+  --color-surface-raised: var(--theme-surface-raised);
   --color-foreground: var(--theme-foreground);
   --color-foreground-secondary: var(--theme-foreground-secondary);
   --color-foreground-muted: var(--theme-foreground-muted);
   --color-primary: var(--theme-primary);
   --color-primary-hover: var(--theme-primary-hover);
   --color-primary-foreground: var(--theme-primary-foreground);
+  --color-primary-glow: var(--theme-primary-glow);
+  --color-accent-2: var(--theme-accent-2);
   --color-secondary: var(--theme-secondary);
   --color-secondary-hover: var(--theme-secondary-hover);
   --color-secondary-foreground: var(--theme-secondary-foreground);
@@ -48,69 +52,284 @@
   --color-warning: var(--theme-warning);
   --color-error: var(--theme-error);
   --color-info: var(--theme-info);
-  --color-gradient-from: var(--theme-gradient-from);
-  --color-gradient-to: var(--theme-gradient-to);
-  --font-sans: "Lucida Console", "Courier New", monospace;
-  --font-mono: "Lucida Console", "Courier New", monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+html {
+  background: var(--theme-background);
 }
 
 body {
   background: var(--theme-background);
   color: var(--theme-foreground);
-  font-family: "Lucida Console", "Courier New", monospace;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  zoom: 90%;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Theme-aware input colors */
-input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
-  background-color: var(--theme-surface);
-  color: var(--theme-foreground);
-  border-color: var(--theme-border);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* Page background: two soft accent glows over the deep base */
+.bg-gradient-theme {
+  background:
+    radial-gradient(1100px 620px at 8% -12%, color-mix(in srgb, var(--theme-primary) 16%, transparent), transparent 62%),
+    radial-gradient(900px 560px at 100% -6%, color-mix(in srgb, var(--theme-accent-2) 12%, transparent), transparent 60%),
+    var(--theme-background);
+  background-attachment: fixed;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
-  border-color: var(--theme-primary);
+::selection {
+  background: color-mix(in srgb, var(--theme-primary) 40%, transparent);
+}
+
+:focus-visible {
   outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
-input[type="text"]:disabled, input[type="email"]:disabled, input[type="password"]:disabled, input[type="number"]:disabled, textarea:disabled, select:disabled {
-  color: var(--theme-foreground-muted) !important;
-  background-color: var(--theme-surface-hover) !important;
-  border-color: var(--theme-border) !important;
-}
-
-/* Theme-aware table colors */
-table td, table th {
-  color: var(--theme-foreground);
-  border-color: var(--theme-border);
-}
-
-/* Theme-aware scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--theme-surface);
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--theme-border-hover);
-  border-radius: 4px;
+  background: var(--theme-surface-raised);
+  border-radius: 99px;
+  border: 2px solid var(--theme-background);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--theme-foreground-muted);
+@layer components {
+  .card {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 40%),
+      var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    border-radius: 24px;
+  }
+
+  .glass {
+    background: color-mix(in srgb, var(--theme-surface) 70%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--theme-border);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--theme-foreground-muted);
+  }
+
+  .text-gradient {
+    background: linear-gradient(120deg, var(--theme-primary), var(--theme-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0.8rem 1.15rem;
+    border-radius: 14px;
+    border: 1px solid var(--theme-border-hover);
+    background: var(--theme-surface-raised);
+    color: var(--theme-foreground);
+    cursor: pointer;
+    user-select: none;
+    transition:
+      transform 0.18s var(--ease-spring),
+      background-color 0.2s,
+      border-color 0.2s,
+      box-shadow 0.25s,
+      filter 0.2s,
+      opacity 0.2s;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.26);
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent-2));
+    color: var(--theme-primary-foreground);
+    border-color: transparent;
+    box-shadow: 0 10px 30px -12px var(--theme-primary-glow);
+  }
+  .btn-primary:hover:not(:disabled) {
+    border-color: transparent;
+    filter: brightness(1.07);
+    box-shadow: 0 14px 38px -10px var(--theme-primary-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--theme-foreground-muted);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--theme-surface-hover);
+    color: var(--theme-foreground);
+    border-color: transparent;
+  }
+
+  .btn-danger {
+    background: color-mix(in srgb, var(--theme-error) 14%, transparent);
+    border-color: color-mix(in srgb, var(--theme-error) 35%, transparent);
+    color: var(--theme-error);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-error) 22%, transparent);
+    border-color: color-mix(in srgb, var(--theme-error) 55%, transparent);
+  }
+
+  .btn-lg {
+    font-size: 1.05rem;
+    padding: 1rem 1.6rem;
+    border-radius: 16px;
+  }
+
+  .btn-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 12px;
+  }
+
+  .seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 13px;
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+  }
+  .seg > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    color: var(--theme-foreground-muted);
+    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+  }
+  .seg > button:hover {
+    color: var(--theme-foreground);
+  }
+  .seg > button[aria-pressed="true"] {
+    background: var(--theme-surface-raised);
+    color: var(--theme-foreground);
+    box-shadow: inset 0 0 0 1px var(--theme-border);
+  }
+
+  .field {
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.75rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid var(--theme-border-hover);
+    background: color-mix(in srgb, var(--theme-background) 70%, transparent);
+    color: var(--theme-foreground);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field::placeholder {
+    color: color-mix(in srgb, var(--theme-foreground-muted) 70%, transparent);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 22%, transparent);
+  }
+  .field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Picker stage: deep panel with drifting glows and a faint grid */
+  .stage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 28px;
+    border: 1px solid var(--theme-border);
+    background: color-mix(in srgb, var(--theme-background) 55%, var(--theme-surface));
+  }
+  .stage::before,
+  .stage::after {
+    content: "";
+    position: absolute;
+    width: 65%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.55;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .stage::before {
+    background: color-mix(in srgb, var(--theme-primary) 30%, transparent);
+    left: -15%;
+    top: -45%;
+    animation: stage-drift 14s ease-in-out infinite alternate;
+  }
+  .stage::after {
+    background: color-mix(in srgb, var(--theme-accent-2) 24%, transparent);
+    right: -18%;
+    bottom: -55%;
+    animation: stage-drift 17s ease-in-out infinite alternate-reverse;
+  }
+  .stage-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--theme-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--theme-border) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse at center, #000 15%, transparent 72%);
+    opacity: 0.55;
+  }
 }
 
-/* Theme transition for all elements */
-* {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+@keyframes stage-drift {
+  to {
+    transform: translate(12%, 10%) scale(1.1);
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.12s !important;
+    scroll-behavior: auto !important;
+  }
+}

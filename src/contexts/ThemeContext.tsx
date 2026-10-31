@@ -1,139 +1,62 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Theme, ThemeMode, ColorPalette, colorPalettes, ThemeColors } from '@/types/theme';
+import { ColorPalette, colorPalettes, Theme, ThemeColors } from '@/types/theme';
 
 interface ThemeContextType {
   theme: Theme;
   colors: ThemeColors;
-  isDark: boolean;
-  setThemeMode: (mode: ThemeMode) => void;
   setColorPalette: (palette: ColorPalette) => void;
-  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-interface ThemeProviderProps {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-}
+const STORAGE_KEY = 'scrum-timer-theme';
+const DEFAULT_THEME: Theme = { palette: 'blue' };
 
-const DEFAULT_THEME: Theme = {
-  mode: 'system',
-  palette: 'blue',
-};
-
-export function ThemeProvider({ children, defaultTheme = DEFAULT_THEME }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
-  const [systemDark, setSystemDark] = useState(false);
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
   const [mounted, setMounted] = useState(false);
 
-  // Check system preference
   useEffect(() => {
-    setMounted(true);
-
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      setSystemDark(mediaQuery.matches);
-
-      const handleChange = (e: MediaQueryListEvent) => {
-        setSystemDark(e.matches);
-      };
-
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, []);
-
-  // Load theme from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('scrum-timer-theme');
-        if (stored) {
-          const parsedTheme = JSON.parse(stored) as Theme;
-          setTheme(parsedTheme);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as Partial<Theme>;
+        if (parsed.palette && parsed.palette in colorPalettes) {
+          setTheme({ palette: parsed.palette });
         }
-      } catch (error) {
-        console.warn('Failed to load theme from localStorage:', error);
       }
+    } catch {
+      // Ignore unreadable storage and keep the default palette
     }
+    setMounted(true);
   }, []);
 
-  // Save theme to localStorage
   useEffect(() => {
-    if (typeof window !== 'undefined' && mounted) {
-      try {
-        localStorage.setItem('scrum-timer-theme', JSON.stringify(theme));
-      } catch (error) {
-        console.warn('Failed to save theme to localStorage:', error);
-      }
+    if (!mounted) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(theme));
+    } catch {
+      // Storage can be unavailable (private mode); the palette still applies
     }
   }, [theme, mounted]);
 
-  // Determine if dark mode should be active
-  const isDark = theme.mode === 'dark' || (theme.mode === 'system' && systemDark);
+  const colors = colorPalettes[theme.palette];
 
-  // Get current colors
-  const colors = colorPalettes[theme.palette][isDark ? 'dark' : 'light'];
-
-  // Update CSS variables
   useEffect(() => {
-    if (typeof window !== 'undefined' && mounted) {
-      const root = document.documentElement;
+    const root = document.documentElement;
+    Object.entries(colors).forEach(([key, value]) => {
+      const kebabKey = key.replace(/([A-Z0-9])/g, '-$1').toLowerCase();
+      root.style.setProperty(`--theme-${kebabKey}`, value);
+    });
+    root.setAttribute('data-palette', theme.palette);
+  }, [colors, theme.palette]);
 
-      // Set all CSS variables
-      Object.entries(colors).forEach(([key, value]) => {
-        // Convert camelCase to kebab-case
-        const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-        root.style.setProperty(`--theme-${kebabKey}`, value);
-      });
-
-      // Set theme mode class
-      root.classList.toggle('dark', isDark);
-      root.classList.toggle('light', !isDark);
-
-      // Set data attributes for theme
-      root.setAttribute('data-theme', theme.palette);
-      root.setAttribute('data-mode', isDark ? 'dark' : 'light');
-    }
-  }, [colors, isDark, theme.palette, mounted]);
-
-  const setThemeMode = (mode: ThemeMode) => {
-    console.log('Setting theme mode:', mode);
-    setTheme(prev => ({ ...prev, mode }));
-  };
-
-  const setColorPalette = (palette: ColorPalette) => {
-    console.log('Setting color palette:', palette);
-    setTheme(prev => ({ ...prev, palette }));
-  };
-
-  const toggleTheme = () => {
-    setThemeMode(isDark ? 'light' : 'dark');
-  };
-
-  const value: ThemeContextType = {
-    theme,
-    colors,
-    isDark,
-    setThemeMode,
-    setColorPalette,
-    toggleTheme,
-  };
-
-  // Prevent hydration issues by only rendering after mount
-  if (!mounted) {
-    return (
-      <ThemeContext.Provider value={value}>
-        {children}
-      </ThemeContext.Provider>
-    );
-  }
+  const setColorPalette = (palette: ColorPalette) => setTheme({ palette });
 
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ theme, colors, setColorPalette }}>
       {children}
     </ThemeContext.Provider>
   );

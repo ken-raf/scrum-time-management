@@ -1,0 +1,360 @@
+/* Avatar gestures. Every animated part uses its own bounding box as the
+   transform reference; arm and head groups contain an invisible rect that
+   pins that box so the pivot lands on the shoulder / the neck. */
+
+.root {
+  display: block;
+  flex: none;
+  overflow: visible;
+  border-radius: 50%;
+}
+.root * {
+  transform-box: fill-box;
+}
+/* Shapes positioned with an SVG transform attribute keep its usual
+   user-space origin, otherwise their rotate(a cx cy) would drift. */
+.root [transform] {
+  transform-box: view-box;
+}
+
+.body {
+  transform-origin: 50% 100%;
+  animation: breathe 3.6s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.head {
+  transform-origin: 50% 72.73%;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.armL,
+.armR {
+  transform-origin: 50% 0%;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.armL {
+  transform: rotate(8deg);
+}
+.armR {
+  transform: rotate(-8deg);
+}
+.eye {
+  transform-origin: center;
+  animation: blink 4.8s infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.pupils,
+.brows,
+.browL,
+.browR {
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.eyesHappy,
+.eyesClosed,
+.blush,
+.sweat,
+.thumb,
+.mouth > * {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.mSmile {
+  opacity: 1;
+}
+.mTalk {
+  transform-origin: center;
+}
+.sweat {
+  transform-origin: center;
+}
+
+/* ---------- waiting: looks around, checks the watch now and then ---------- */
+.root[data-mood="waiting"] .head {
+  animation: waitHead 9s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.root[data-mood="waiting"] .pupils {
+  animation: waitEyes 9s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.root[data-mood="waiting"] .armL {
+  animation: watchCheck 9s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+
+/* ---------- impatient: arms crossed, tapping, sighing ---------- */
+.root[data-mood="impatient"] .armL {
+  transform: rotate(-112deg);
+}
+.root[data-mood="impatient"] .armR {
+  transform: rotate(112deg);
+}
+.root[data-mood="impatient"] .body {
+  animation: tap 0.7s ease-in-out infinite;
+}
+.root[data-mood="impatient"] .head {
+  animation: sigh 5s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.root[data-mood="impatient"] .browL {
+  transform: translateY(1px) rotate(14deg);
+}
+.root[data-mood="impatient"] .browR {
+  transform: translateY(1px) rotate(-14deg);
+}
+.root[data-mood="impatient"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="impatient"] .mFlat {
+  opacity: 1;
+}
+
+/* ---------- selected: surprised hop, hands up ---------- */
+.root[data-mood="selected"] .body {
+  animation: hop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 2;
+}
+.root[data-mood="selected"] .armL {
+  transform: rotate(138deg);
+}
+.root[data-mood="selected"] .armR {
+  transform: rotate(-138deg);
+}
+.root[data-mood="selected"] .pupils {
+  transform: scale(1.22);
+}
+.root[data-mood="selected"] .brows {
+  transform: translateY(-3px);
+}
+.root[data-mood="selected"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="selected"] .mO {
+  opacity: 1;
+}
+
+/* ---------- speaking: talks, gestures, nods ---------- */
+.root[data-mood="speaking"] .armR,
+.root[data-mood="overtime"] .armR {
+  animation: gesture 1.7s ease-in-out infinite;
+}
+.root[data-mood="speaking"] .head,
+.root[data-mood="overtime"] .head {
+  animation: nod 1.4s ease-in-out infinite;
+}
+.root[data-mood="speaking"] .mSmile,
+.root[data-mood="overtime"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="speaking"] .mTalk,
+.root[data-mood="overtime"] .mTalk {
+  opacity: 1;
+  animation: talk 0.95s linear infinite;
+}
+
+/* ---------- overtime: faster, sweating, worried ---------- */
+.root[data-mood="overtime"] .armR {
+  animation-duration: 0.95s;
+}
+.root[data-mood="overtime"] .armL {
+  animation: gestureL 1.3s ease-in-out infinite;
+}
+.root[data-mood="overtime"] .head {
+  animation-duration: 0.8s;
+}
+.root[data-mood="overtime"] .mTalk {
+  animation-duration: 0.55s;
+}
+.root[data-mood="overtime"] .sweat {
+  animation: sweat 1.3s ease-in infinite;
+}
+.root[data-mood="overtime"] .blush {
+  opacity: 0.45;
+}
+.root[data-mood="overtime"] .browL {
+  transform: rotate(-16deg);
+}
+.root[data-mood="overtime"] .browR {
+  transform: rotate(16deg);
+}
+
+/* ---------- done: thumbs up, big smile ---------- */
+.root[data-mood="done"] .armR {
+  animation: thumbsUp 2.4s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.root[data-mood="done"] .thumb {
+  opacity: 1;
+}
+
+/* ---------- done late: rubs the neck, blushes ---------- */
+.root[data-mood="doneLate"] .armR {
+  animation: rubNeck 0.9s ease-in-out infinite;
+}
+.root[data-mood="doneLate"] .blush {
+  opacity: 0.9;
+}
+.root[data-mood="doneLate"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="doneLate"] .mWavy {
+  opacity: 1;
+}
+.root[data-mood="doneLate"] .browL {
+  transform: rotate(-12deg);
+}
+.root[data-mood="doneLate"] .browR {
+  transform: rotate(12deg);
+}
+
+/* ---------- celebrate: both arms up, jumping ---------- */
+.root[data-mood="celebrate"] .body {
+  animation: jump 0.75s ease-in-out infinite;
+  animation-delay: var(--av-delay, 0s);
+}
+.root[data-mood="celebrate"] .armL {
+  animation: cheerL 0.75s ease-in-out infinite alternate;
+}
+.root[data-mood="celebrate"] .armR {
+  animation: cheerR 0.75s ease-in-out infinite alternate-reverse;
+}
+
+/* happy eyes + big smile */
+.root[data-mood="done"] .eyesOpen,
+.root[data-mood="celebrate"] .eyesOpen {
+  opacity: 0;
+}
+.root[data-mood="done"] .eyesHappy,
+.root[data-mood="celebrate"] .eyesHappy {
+  opacity: 1;
+}
+.root[data-mood="done"] .mSmile,
+.root[data-mood="celebrate"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="done"] .mBig,
+.root[data-mood="celebrate"] .mBig {
+  opacity: 1;
+}
+
+/* ---------- absent: asleep and greyed out ---------- */
+.root[data-mood="absent"] {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+.root[data-mood="absent"] .body,
+.root[data-mood="absent"] .eye {
+  animation: none;
+}
+.root[data-mood="absent"] .head {
+  transform: rotate(7deg);
+}
+.root[data-mood="absent"] .eyesOpen {
+  opacity: 0;
+}
+.root[data-mood="absent"] .eyesClosed {
+  opacity: 1;
+}
+.root[data-mood="absent"] .mSmile {
+  opacity: 0;
+}
+.root[data-mood="absent"] .mSleep {
+  opacity: 1;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.2px); }
+}
+@keyframes blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes waitHead {
+  0%, 100% { transform: rotate(0deg); }
+  14%, 26% { transform: rotate(-6deg); }
+  36%, 50% { transform: rotate(5deg); }
+  58% { transform: rotate(0deg); }
+  66%, 84% { transform: rotate(-9deg) translateY(1.5px); }
+  92% { transform: rotate(0deg); }
+}
+@keyframes waitEyes {
+  0%, 100% { transform: translate(0, 0); }
+  14%, 26% { transform: translate(-1.8px, 0); }
+  36%, 50% { transform: translate(1.8px, 0); }
+  58% { transform: translate(0, 0); }
+  66%, 84% { transform: translate(-0.8px, 2px); }
+  92% { transform: translate(0, 0); }
+}
+@keyframes watchCheck {
+  0%, 60%, 92%, 100% { transform: rotate(8deg); }
+  67%, 84% { transform: rotate(-122deg); }
+}
+@keyframes tap {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.6px); }
+}
+@keyframes sigh {
+  0%, 66%, 100% { transform: rotate(0deg); }
+  74% { transform: rotate(-7deg) translateY(1.5px); }
+  86% { transform: rotate(6deg); }
+}
+@keyframes hop {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-7px); }
+}
+@keyframes gesture {
+  0%, 100% { transform: rotate(118deg); }
+  25% { transform: rotate(148deg); }
+  50% { transform: rotate(126deg); }
+  75% { transform: rotate(152deg); }
+}
+@keyframes gestureL {
+  0%, 100% { transform: rotate(-112deg); }
+  50% { transform: rotate(-140deg); }
+}
+@keyframes nod {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(3.5deg); }
+  65% { transform: rotate(-2.5deg); }
+}
+@keyframes talk {
+  0%, 100% { transform: scaleY(0.35); }
+  14% { transform: scaleY(1); }
+  30% { transform: scaleY(0.45); }
+  46% { transform: scaleY(0.9); }
+  62% { transform: scaleY(0.3); }
+  80% { transform: scaleY(1.05); }
+}
+@keyframes sweat {
+  0% { transform: translateY(-2px); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+@keyframes thumbsUp {
+  0%, 100% { transform: rotate(-148deg); }
+  50% { transform: rotate(-136deg); }
+}
+@keyframes rubNeck {
+  0%, 100% { transform: rotate(172deg); }
+  50% { transform: rotate(188deg); }
+}
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(-6px); }
+}
+@keyframes cheerL {
+  from { transform: rotate(148deg); }
+  to { transform: rotate(176deg); }
+}
+@keyframes cheerR {
+  from { transform: rotate(-148deg); }
+  to { transform: rotate(-176deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root *,
+  .root .body {
+    animation: none !important;
+  }
+}

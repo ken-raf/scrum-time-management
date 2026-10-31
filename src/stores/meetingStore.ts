@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Participant, MeetingState, MeetingSummary, HistoricalMeeting } from '@/types';
+import { withAvatars } from '@/lib/avatars';
 
 interface MeetingStore {
   participants: Participant[];
@@ -12,7 +13,7 @@ interface MeetingStore {
   historicalMeetings: HistoricalMeeting[];
 
   // Participant actions
-  addParticipant: (name: string, allocatedTime: number) => void;
+  addParticipant: (name: string, allocatedTime: number, avatar?: string) => void;
   removeParticipant: (id: string) => void;
   updateParticipant: (id: string, updates: Partial<Participant>) => void;
   toggleParticipantPresence: (id: string) => void;
@@ -57,12 +58,13 @@ export const useMeetingStore = create<MeetingStore>()(
       summaries: [],
       historicalMeetings: [],
 
-      addParticipant: (name: string, allocatedTime: number) => {
+      addParticipant: (name: string, allocatedTime: number, avatar?: string) => {
         const newParticipant: Participant = {
           id: crypto.randomUUID(),
           name,
           allocatedTime,
           isPresent: true,
+          avatar,
         };
         set((state) => ({
           participants: [...state.participants, newParticipant],
@@ -307,6 +309,15 @@ export const useMeetingStore = create<MeetingStore>()(
     }),
     {
       name: 'scrum-meeting-storage',
+      // v1: participants saved before avatars existed get an animal automatically.
+      version: 1,
+      migrate: (persisted, version) => {
+        const state = persisted as Partial<MeetingStore>;
+        if (version < 1 && Array.isArray(state.participants)) {
+          state.participants = withAvatars(state.participants);
+        }
+        return state as MeetingStore;
+      },
     }
   )
 );

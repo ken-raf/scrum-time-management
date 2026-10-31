@@ -1,51 +1,79 @@
 {
   "app": {
     "title": "Daily Scrum Time Management",
-    "description": "Efficiently organize speaking time for your meeting participants"
+    "description": "Share speaking time fairly and keep your dailies short.",
+    "shortTitle": "Daily Scrum"
   },
   "navigation": {
     "history": "History",
     "backToHome": "Back to Home"
   },
   "meeting": {
-    "startMeeting": "Start Meeting",
-    "endMeeting": "End Meeting",
+    "startMeeting": "Start meeting",
+    "endMeeting": "End meeting",
     "resetMeeting": "Reset",
-    "newMeeting": "New Meeting",
+    "newMeeting": "New meeting",
     "meetingFinished": "Meeting Finished!",
     "meetingFinishedDescription": "View the summary or start a new meeting.",
-    "wheelPreview": "Wheel Preview",
-    "wheelPreviewDescription": "Mark participants as present to see who will participate in the meeting.",
     "noParticipantsPresent": "No participants present",
     "noParticipantsPresentDescription": "Mark participants as present to use the wheel.",
     "allParticipantsSpoken": "All participants have spoken!",
-    "allParticipantsSpokenDescription": "You can end the meeting."
+    "allParticipantsSpokenDescription": "You can end the meeting.",
+    "duration": "Meeting duration",
+    "current": "Current meeting",
+    "startHint": "Tick at least one person as present"
   },
   "participants": {
-    "addParticipant": "Add Participant",
+    "addParticipant": "Add a participant",
     "name": "Name",
-    "namePlaceholder": "Participant name",
-    "allocatedTime": "Allocated Time (mm:ss)",
-    "allocatedTimeLabel": "Allocated Time (minutes)",
-    "actions": "Actions",
-    "present": "Present",
-    "absent": "Absent",
-    "participants": "Participants",
-    "participantSelection": "Participant Selection",
-    "whosTurn": "Who's turn?",
-    "selecting": "Selecting...",
-    "remaining": "remaining",
-    "remainingPlural": "remaining",
-    "add": "Add"
+    "namePlaceholder": "Participant’s first name",
+    "allocatedTime": "Time (mm:ss)",
+    "add": "Add",
+    "eyebrow": "Team",
+    "chooseAvatar": "Avatar",
+    "errors": {
+      "nameRequired": "Enter a name.",
+      "timeFormat": "Use mm:ss, for example 02:00."
+    },
+    "listTitle": "Participants",
+    "presentCount": "{present} of {total} present",
+    "empty": "Nobody yet",
+    "emptyBody": "Add your team members with their speaking time.",
+    "markPresent": "Present: {name}",
+    "changeAvatar": "Change {name}’s avatar",
+    "edit": "Edit {name}",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Remove {name}",
+    "addShort": "Add",
+    "added": "{name} joined the team",
+    "done": "Done",
+    "close": "Close",
+    "animals": {
+      "fox": "Fox",
+      "cat": "Cat",
+      "panda": "Panda",
+      "bear": "Bear",
+      "rabbit": "Rabbit",
+      "koala": "Koala",
+      "owl": "Owl",
+      "penguin": "Penguin",
+      "tiger": "Tiger",
+      "raccoon": "Raccoon",
+      "lemur": "Lemur",
+      "lion": "Lion"
+    }
   },
   "timer": {
     "allocatedTime": "Allocated time",
-    "readyToStart": "Ready to start",
-    "timeRemaining": "Time remaining",
-    "overtime": "Overtime by",
+    "timeRemaining": "Time left",
     "start": "Start",
-    "finish": "Finish",
-    "close": "Close"
+    "finish": "Done",
+    "close": "Close",
+    "thanks": "Thanks {name}",
+    "usedOf": "{used} of {allocated}",
+    "overtimeLabel": "Overtime",
+    "ofAllocated": "of {allocated}"
   },
   "history": {
     "title": "Meeting History",
@@ -103,16 +131,22 @@
     "timeComparison": "Time Comparison",
     "totalAllocatedTime": "Total allocated time",
     "totalUsedTime": "Total used time",
-    "participantDetails": "Participant Details",
+    "participantDetails": "Per participant",
     "participant": "Participant",
     "usedTime": "Used time",
     "difference": "Difference",
     "status": "Status",
-    "didNotSpeak": "Did not speak",
+    "didNotSpeak": "Didn’t speak",
     "overtime": "Overtime",
     "respected": "Respected",
     "startTime": "Start",
-    "endTime": "End"
+    "endTime": "End",
+    "eyebrow": "Meeting over",
+    "title": "Nice work, team",
+    "totalDuration": "Total duration",
+    "participants": "Participants",
+    "timeUsedOfAllocated": "Time used",
+    "overtimes": "Overtimes"
   },
   "stats": {
     "totalDuration": "Total duration",
@@ -122,43 +156,70 @@
   },
   "language": {
     "french": "Français",
-    "english": "English"
-  },
-  "media": {
-    "openMusicPlayer": "Open Music Player",
-    "music": "Music",
-    "file": "File",
-    "url": "URL",
-    "add": "Add",
-    "minimize": "Minimize",
-    "close": "Close",
-    "uploadAudioVideo": "Upload Audio/Video File",
-    "addMusicUrl": "Add Music URL",
-    "youtubeAudioUrl": "YouTube or audio URL...",
-    "youtubeVideoPlayer": "YouTube video player",
-    "closeVideo": "Close Video",
-    "uploadFiles": "Upload audio/video or paste YouTube URL"
+    "english": "English",
+    "label": "Language"
   },
   "liveStats": {
-    "title": "Live Statistics",
-    "presentParticipants": "Present participants",
+    "title": "Progress",
+    "presentParticipants": "Present",
     "haveSpoken": "Have spoken",
     "timeUsed": "Time used",
     "overtimes": "Overtimes",
-    "meetingProgress": "Meeting progress",
-    "totalAllocatedTime": "Total allocated time",
-    "elapsedTime": "Elapsed time",
+    "meetingProgress": "Progress",
+    "totalAllocatedTime": "Allocated",
+    "elapsedTime": "Elapsed",
     "participantsStatus": "Participants Status",
-    "haveSpokenList": "✅ Have spoken",
-    "waiting": "⏳ Waiting"
+    "haveSpokenList": "Have spoken",
+    "waiting": "Waiting",
+    "eyebrow": "Live",
+    "onAir": "Speaking now"
   },
-  "speakingModal": {
-    "allocatedTime": "Allocated time",
-    "readyToStart": "Ready to start",
-    "timeRemaining": "Time remaining",
-    "overtimeBy": "Overtime by",
-    "start": "Start",
-    "finish": "Finish",
-    "close": "Close"
+  "home": {
+    "eyebrow": "Meeting setup",
+    "titleStart": "Who’s speaking",
+    "titleAccent": "today?"
+  },
+  "header": {
+    "palette": "Accent color",
+    "palettes": {
+      "blue": "Night indigo",
+      "indigo": "Indigo",
+      "purple": "Violet",
+      "rose": "Rose",
+      "red": "Coral",
+      "orange": "Amber",
+      "green": "Mint",
+      "emerald": "Emerald",
+      "teal": "Lagoon",
+      "slate": "Slate"
+    },
+    "soundOn": "Mute sounds",
+    "soundOff": "Turn sounds on",
+    "install": "Install app",
+    "installIosTitle": "Install on iPhone or iPad",
+    "installIosBody": "Tap Share, then “Add to Home Screen”."
+  },
+  "picker": {
+    "modeLabel": "Draw animation",
+    "modes": {
+      "random": "Random",
+      "wheel": "Wheel",
+      "reel": "Carousel",
+      "deck": "Cards",
+      "spotlight": "Spotlight"
+    },
+    "present": "{count, plural, =0 {Nobody present} one {# present} other {# present}}",
+    "remaining": "{count, plural, =0 {Nobody left} one {# waiting} other {# waiting}}",
+    "noneTitle": "Nobody is present",
+    "noneBody": "Add participants and tick the ones who are here.",
+    "allSpokenTitle": "Everyone has spoken",
+    "allSpokenBody": "You can end the meeting.",
+    "itsTurn": "Your turn,",
+    "selecting": "Drawing…",
+    "openingTimer": "Opening the timer…",
+    "whosTurn": "Who’s next?",
+    "previewEyebrow": "Preview",
+    "previewTitle": "The draw",
+    "previewBody": "Pick an animation, or leave it on Random to get a new one every turn."
   }
 }

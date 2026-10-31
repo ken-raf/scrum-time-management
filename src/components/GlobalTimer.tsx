@@ -1,32 +1,30 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { useTimer } from '@/hooks/useTimer';
 import { formatTime } from '@/utils/time';
-import { Clock } from 'lucide-react';
 
+/** Meeting clock shown in the meeting bar, with a live dot. */
 export const GlobalTimer = () => {
-  const { globalTimer, incrementGlobalTimer, meetingState } = useMeetingStore();
+  const t = useTranslations('meeting');
+  const globalTimer = useMeetingStore((s) => s.globalTimer);
+  const incrementGlobalTimer = useMeetingStore((s) => s.incrementGlobalTimer);
+  const meetingState = useMeetingStore((s) => s.meetingState);
 
-  useTimer(
-    meetingState.isStarted && !meetingState.isFinished,
-    incrementGlobalTimer
-  );
+  useTimer(meetingState.isStarted && !meetingState.isFinished, incrementGlobalTimer);
 
-  if (!meetingState.isStarted) {
-    return null;
-  }
+  if (!meetingState.isStarted) return null;
 
   return (
-    <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
-      <div className="flex items-center justify-center gap-3">
-        <Clock size={24} className="text-primary" />
-        <div className="text-center">
-          <p className="text-sm text-foreground-secondary mb-1">Durée de la réunion</p>
-          <p className="text-2xl font-mono font-bold text-foreground">
-            {formatTime(globalTimer)}
-          </p>
-        </div>
+    <div className="flex items-center gap-3">
+      <span className="relative flex h-2.5 w-2.5">
+        {!meetingState.isFinished && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-error opacity-60" />}
+        <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${meetingState.isFinished ? 'bg-foreground-muted' : 'bg-error'}`} />
+      </span>
+      <div>
+        <p className="eyebrow">{t('duration')}</p>
+        <p className="font-mono text-2xl font-semibold leading-tight tracking-tight tabular">{formatTime(globalTimer)}</p>
       </div>
     </div>
   );

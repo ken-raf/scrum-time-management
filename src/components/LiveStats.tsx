@@ -1,172 +1,187 @@
 'use client';
 
+import clsx from 'clsx';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { Mic } from 'lucide-react';
 import { useMeetingStore } from '@/stores/meetingStore';
 import { formatTime } from '@/utils/time';
-import { Users, Clock, CheckCircle, AlertTriangle, Target } from 'lucide-react';
+import { ParticipantAvatar } from '@/components/avatar/ParticipantAvatar';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import type { Participant } from '@/types';
+
+const spring = { type: 'spring' as const, stiffness: 380, damping: 32 };
 
 export const LiveStats = () => {
-  const t = useTranslations();
-  const { participants, meetingState, globalTimer } = useMeetingStore();
+  const t = useTranslations('liveStats');
+  const participants = useMeetingStore((s) => s.participants);
+  const meetingState = useMeetingStore((s) => s.meetingState);
+  const globalTimer = useMeetingStore((s) => s.globalTimer);
+  const currentSpeakingTime = useMeetingStore((s) => s.currentSpeakingTime);
+  const isSpeaking = useMeetingStore((s) => s.isSpeaking);
 
-  const presentParticipants = participants.filter(p => p.isPresent);
-  const spokenParticipants = presentParticipants.filter(p =>
-    meetingState.spokenParticipants.includes(p.id)
-  );
-  const remainingParticipants = presentParticipants.filter(p =>
-    !meetingState.spokenParticipants.includes(p.id)
-  );
+  const present = participants.filter((p) => p.isPresent);
+  const spoken = meetingState.spokenParticipants
+    .map((id) => present.find((p) => p.id === id))
+    .filter((p): p is Participant => !!p);
+  const current = present.find((p) => p.id === meetingState.currentParticipant);
+  const waiting = present.filter((p) => !meetingState.spokenParticipants.includes(p.id) && p.id !== current?.id);
 
-  const totalAllocatedTime = presentParticipants.reduce((sum, p) => sum + p.allocatedTime, 0);
-  const totalUsedTime = spokenParticipants.reduce((sum, p) => sum + (p.actualTime || 0), 0);
-  const overtimeParticipants = spokenParticipants.filter(p => (p.actualTime || 0) > p.allocatedTime);
+  const totalAllocated = present.reduce((s, p) => s + p.allocatedTime, 0);
+  const totalUsed = spoken.reduce((s, p) => s + (p.actualTime ?? 0), 0);
+  const overtimes = spoken.filter((p) => (p.actualTime ?? 0) > p.allocatedTime).length;
+  const progress = present.length ? spoken.length / present.length : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Stats Overview */}
-      <div className="bg-surface rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4 text-foreground flex items-center gap-2">
-          <Target size={24} className="text-primary" />
-          {t('liveStats.title')}
-        </h2>
+    <div className="card flex flex-col gap-4 p-5 sm:p-6 lg:h-full lg:min-h-0">
+      <div>
+        <p className="eyebrow">{t('eyebrow')}</p>
+        <h2 className="mt-1 text-xl font-semibold tracking-tight">{t('title')}</h2>
+      </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <Users size={24} className="text-primary mx-auto mb-2" />
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.presentParticipants')}</p>
-            <p className="text-2xl font-bold text-foreground">{presentParticipants.length}</p>
-          </div>
+      <div className="grid grid-cols-2 gap-2.5 xl:grid-cols-4">
+        <Tile label={t('presentParticipants')}>
+          <AnimatedNumber value={present.length} />
+        </Tile>
+        <Tile label={t('haveSpoken')}>
+          <AnimatedNumber value={spoken.length} />
+          <span className="text-foreground-muted">/{present.length}</span>
+        </Tile>
+        <Tile label={t('timeUsed')}>
+          <AnimatedNumber value={totalUsed} format={(n) => formatTime(Math.round(n))} />
+        </Tile>
+        <Tile label={t('overtimes')} alert={overtimes > 0}>
+          <AnimatedNumber value={overtimes} />
+        </Tile>
+      </div>
 
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <CheckCircle size={24} className="text-success mx-auto mb-2" />
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.haveSpoken')}</p>
-            <p className="text-2xl font-bold text-foreground">
-              {spokenParticipants.length}/{presentParticipants.length}
-            </p>
-          </div>
-
-          <div className="bg-secondary rounded-lg p-4 text-center">
-            <Clock size={24} className="text-warning mx-auto mb-2" />
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.timeUsed')}</p>
-            <p className="text-xl font-bold text-foreground font-mono">
-              {formatTime(totalUsedTime)}
-            </p>
-          </div>
-
-          <div className={`rounded-lg p-4 text-center ${
-            overtimeParticipants.length > 0 ? 'bg-secondary' : 'bg-secondary'
-          }`}>
-            {overtimeParticipants.length > 0 ? (
-              <AlertTriangle size={24} className="text-error mx-auto mb-2" />
-            ) : (
-              <CheckCircle size={24} className="text-success mx-auto mb-2" />
-            )}
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.overtimes')}</p>
-            <p className="text-2xl font-bold text-foreground">{overtimeParticipants.length}</p>
-          </div>
+      <div>
+        <div className="mb-2 flex justify-between text-sm text-foreground-muted">
+          <span>{t('meetingProgress')}</span>
+          <span className="font-mono tabular">{Math.round(progress * 100)}%</span>
         </div>
-
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-foreground-secondary mb-2">
-            <span>{t('liveStats.meetingProgress')}</span>
-            <span>{spokenParticipants.length}/{presentParticipants.length}</span>
-          </div>
-          <div className="w-full bg-border rounded-full h-3">
-            <div
-              className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-              style={{
-                width: `${presentParticipants.length > 0 ? (spokenParticipants.length / presentParticipants.length) * 100 : 0}%`
-              }}
-            ></div>
-          </div>
+        <div className="h-2 overflow-hidden rounded-full bg-surface-hover">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: 'linear-gradient(90deg, var(--theme-primary), var(--theme-accent-2))', boxShadow: '0 0 16px var(--theme-primary-glow)' }}
+            initial={false}
+            animate={{ width: `${progress * 100}%` }}
+            transition={{ type: 'spring', stiffness: 120, damping: 14 }}
+          />
         </div>
-
-        {/* Time Comparison */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.totalAllocatedTime')}</p>
-            <p className="text-lg font-bold text-primary font-mono">
-              {formatTime(totalAllocatedTime)}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-foreground-secondary mb-1">{t('liveStats.elapsedTime')}</p>
-            <p className="text-lg font-bold text-success font-mono">
-              {formatTime(globalTimer)}
-            </p>
-          </div>
+        <div className="mt-2 flex justify-between font-mono text-xs text-foreground-muted tabular">
+          <span>
+            {t('elapsedTime')} {formatTime(globalTimer)}
+          </span>
+          <span>
+            {t('totalAllocatedTime')} {formatTime(totalAllocated)}
+          </span>
         </div>
       </div>
 
-      {/* Participants Status */}
-      <div className="bg-surface rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4 text-foreground">
-          {t('liveStats.participantsStatus')}
-        </h3>
-
-        <div className="space-y-3">
-          {/* Spoken Participants */}
-          {spokenParticipants.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium text-success mb-2">
-                {t('liveStats.haveSpokenList')} ({spokenParticipants.length})
-              </h4>
-              <div className="space-y-2">
-                {spokenParticipants.map(participant => {
-                  const isOvertime = (participant.actualTime || 0) > participant.allocatedTime;
-                  return (
-                    <div
-                      key={participant.id}
-                      className={`flex justify-between items-center p-2 rounded ${
-                        isOvertime ? 'bg-secondary' : 'bg-secondary'
-                      }`}
-                    >
-                      <span className="text-foreground">{participant.name}</span>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className={`font-mono font-semibold ${
-                          isOvertime ? 'text-error' : 'text-success'
-                        }`}>
-                          {formatTime(participant.actualTime || 0)}
-                        </span>
-                        <span className="text-foreground-muted">/</span>
-                        <span className="font-mono text-foreground-secondary">
-                          {formatTime(participant.allocatedTime)}
-                        </span>
-                        {isOvertime && (
-                          <AlertTriangle size={16} className="text-error" />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      <LayoutGroup>
+        <AnimatePresence>
+          {current && (
+            <motion.div
+              key="on-air"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <motion.div
+                layoutId={`live-${current.id}`}
+                transition={spring}
+                className="flex items-center gap-3 rounded-2xl border border-primary/40 p-2.5 pr-4"
+                style={{ background: 'color-mix(in srgb, var(--theme-primary) 10%, transparent)' }}
+              >
+                <ParticipantAvatar participant={current} size={44} />
+                <div className="min-w-0 flex-1">
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-primary">
+                    <Mic size={12} />
+                    {t('onAir')}
+                  </p>
+                  <p className="truncate font-semibold">{current.name}</p>
+                </div>
+                <span className={clsx('font-mono text-sm tabular', isSpeaking && currentSpeakingTime > current.allocatedTime ? 'text-error' : 'text-foreground-secondary')}>
+                  {isSpeaking ? formatTime(currentSpeakingTime) : '—'} / {formatTime(current.allocatedTime)}
+                </span>
+              </motion.div>
+            </motion.div>
           )}
+        </AnimatePresence>
 
-          {/* Remaining Participants */}
-          {remainingParticipants.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium text-primary mb-2">
-                {t('liveStats.waiting')} ({remainingParticipants.length})
-              </h4>
-              <div className="space-y-2">
-                {remainingParticipants.map(participant => (
-                  <div
-                    key={participant.id}
-                    className="flex justify-between items-center p-2 rounded bg-secondary"
-                  >
-                    <span className="text-foreground">{participant.name}</span>
-                    <span className="font-mono text-foreground-secondary text-sm">
-                      {formatTime(participant.allocatedTime)}
+        <div className="-mr-2 grid content-start gap-4 overflow-y-auto pr-2 sm:grid-cols-2 lg:min-h-0 lg:flex-1 lg:grid-cols-1 xl:grid-cols-2">
+          <Lane title={t('waiting')} count={waiting.length}>
+            {waiting.map((p) => (
+              <PersonRow key={p.id} p={p} right={<span className="text-foreground-muted">{formatTime(p.allocatedTime)}</span>} />
+            ))}
+          </Lane>
+          <Lane title={t('haveSpokenList')} count={spoken.length}>
+            {spoken.map((p) => {
+              const late = (p.actualTime ?? 0) > p.allocatedTime;
+              return (
+                <PersonRow
+                  key={p.id}
+                  p={p}
+                  right={
+                    <span className={late ? 'text-error' : 'text-success'}>
+                      {formatTime(p.actualTime ?? 0)}
+                      <span className="text-foreground-muted"> / {formatTime(p.allocatedTime)}</span>
                     </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  }
+                />
+              );
+            })}
+          </Lane>
         </div>
-      </div>
+      </LayoutGroup>
     </div>
   );
 };
+
+function Tile({ label, alert, children }: { label: string; alert?: boolean; children: React.ReactNode }) {
+  return (
+    <div
+      className={clsx(
+        'grid gap-0.5 rounded-2xl border p-3 transition-colors duration-500',
+        alert ? 'border-error/40 bg-error/10' : 'border-border bg-surface-hover/60'
+      )}
+    >
+      <span className="truncate text-xs text-foreground-muted" title={label}>{label}</span>
+      <span className={clsx('font-mono text-2xl font-semibold tracking-tight tabular xl:text-xl', alert && 'text-error')}>{children}</span>
+    </div>
+  );
+}
+
+function Lane({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
+  return (
+    <div className="min-w-0">
+      <div className="mb-2 flex justify-between text-xs text-foreground-muted">
+        <span>{title}</span>
+        <span className="font-mono tabular">{count}</span>
+      </div>
+      <ul className="grid min-h-10 gap-1.5">
+        <AnimatePresence initial={false}>{children}</AnimatePresence>
+      </ul>
+    </div>
+  );
+}
+
+function PersonRow({ p, right }: { p: Participant; right: React.ReactNode }) {
+  return (
+    <motion.li
+      layout
+      layoutId={`live-${p.id}`}
+      transition={spring}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="flex min-w-0 items-center gap-2 rounded-full border border-border bg-surface-hover/60 py-1 pl-1 pr-3"
+    >
+      <ParticipantAvatar participant={p} size={30} />
+      <span className="min-w-0 flex-1 truncate text-sm font-medium">{p.name}</span>
+      <span className="font-mono text-xs tabular">{right}</span>
+    </motion.li>
+  );
+}

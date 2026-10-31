@@ -1,205 +1,128 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { ParticipantForm } from '@/components/ParticipantForm';
+import { UserPlus } from 'lucide-react';
+import { AppHeader } from '@/components/AppHeader';
+import { AddParticipantModal } from '@/components/AddParticipantModal';
 import { ParticipantTable } from '@/components/ParticipantTable';
 import { GlobalTimer } from '@/components/GlobalTimer';
 import { MeetingControls } from '@/components/MeetingControls';
-import { SimpleSpinWheel } from '@/components/SimpleSpinWheel';
+import { ParticipantPicker } from '@/components/selection/ParticipantPicker';
 import { SpeakingModal } from '@/components/SpeakingModal';
 import { LiveStats } from '@/components/LiveStats';
 import { MeetingSummary } from '@/components/MeetingSummary';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { FloatingMediaPlayer } from '@/components/FloatingMediaPlayer';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useMeetingStore } from '@/stores/meetingStore';
-import { Users, Clock, History } from 'lucide-react';
-import Link from 'next/link';
+
+const enter = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+};
+
+// On desktop the app is exactly one screen tall: the page never scrolls,
+// each card fills its row and long lists scroll inside their card.
+const VIEW = 'flex flex-col gap-4 lg:h-full lg:min-h-0';
+const ROW = 'grid gap-4 lg:min-h-0 lg:flex-1';
 
 export default function Home() {
   const t = useTranslations();
   const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
-  const { meetingState, selectNextParticipant } = useMeetingStore();
+  const [addOpen, setAddOpen] = useState(false);
+  const meetingState = useMeetingStore((s) => s.meetingState);
+  const openAdd = useCallback(() => setAddOpen(true), []);
+  const closeAdd = useCallback(() => setAddOpen(false), []);
 
   const handleParticipantSelected = (participantId: string) => {
     setSelectedParticipant(participantId);
-
-    // Set the current participant in the store so stopSpeaking() works
     const { meetingState } = useMeetingStore.getState();
-    useMeetingStore.setState({
-      meetingState: {
-        ...meetingState,
-        currentParticipant: participantId,
-      },
-    });
+    useMeetingStore.setState({ meetingState: { ...meetingState, currentParticipant: participantId } });
   };
 
   const handleCloseSpeakingModal = () => {
     setSelectedParticipant(null);
-    // Clear the current participant when modal is closed without completing the turn
-    const { clearCurrentParticipant } = useMeetingStore.getState();
-    clearCurrentParticipant();
+    useMeetingStore.getState().clearCurrentParticipant();
   };
 
-  const handleNextParticipant = () => {
-    const nextParticipant = selectNextParticipant();
-    if (nextParticipant) {
-      setSelectedParticipant(nextParticipant);
-    }
-  };
-
-  const handleNewMeeting = () => {
-    const { resetMeeting } = useMeetingStore.getState();
-    resetMeeting();
-  };
-
-  // No longer needed - summary shows directly in page
+  const view = meetingState.isFinished ? 'summary' : meetingState.isStarted ? 'live' : 'setup';
 
   return (
-    <div className="min-h-screen bg-gradient-theme">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <ThemeToggle />
-            </div>
-            <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
-              <Clock size={40} className="text-primary" />
-              {t('app.title')}
-            </h1>
-            <Link
-              href="/history"
-              className="flex items-center gap-2 bg-surface hover:bg-surface-hover text-primary border border-primary px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-            >
-              <History size={20} />
-              {t('navigation.history')}
-            </Link>
-          </div>
-          <p className="text-foreground-secondary text-lg">
-            {t('app.description')}
-          </p>
-        </div>
+    <div className="flex min-h-dvh flex-col bg-gradient-theme lg:h-dvh lg:overflow-hidden">
+      <AppHeader />
 
-        {/* Global Timer */}
-        <GlobalTimer />
-
-        {/* Meeting Name - Show when meeting is active */}
-        {meetingState.isStarted && meetingState.name && (
-          <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-foreground">
-                {meetingState.name}
-              </h2>
-            </div>
-          </div>
-        )}
-
-        {/* Meeting Controls - Show at top when meeting is active or finished */}
-        {meetingState.isStarted && (
-          <div className="bg-surface rounded-lg shadow-md p-4 mb-6">
-            <div className="flex justify-center">
-              <MeetingControls onNewMeeting={handleNewMeeting} />
-            </div>
-          </div>
-        )}
-
-        {meetingState.isStarted && !meetingState.isFinished ? (
-          /* During Meeting Layout */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Live Stats */}
-            <div className="lg:col-span-2">
-              <LiveStats />
-            </div>
-
-            {/* Right Column - Spin Wheel */}
-            <div className="space-y-6">
-              <div className="bg-surface rounded-lg shadow-md">
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                    <Users size={24} className="text-primary" />
-                    {t('participants.participantSelection')}
-                  </h2>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 sm:px-6 lg:min-h-0 lg:py-5">
+        <AnimatePresence mode="wait">
+          {view === 'setup' && (
+            <motion.div key="setup" {...enter} className={VIEW}>
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="eyebrow">{t('home.eyebrow')}</p>
+                  <h1 className="mt-1 text-3xl font-semibold tracking-[-0.03em] text-balance">
+                    {t('home.titleStart')} <span className="text-gradient">{t('home.titleAccent')}</span>
+                  </h1>
                 </div>
-                <SimpleSpinWheel onParticipantSelected={handleParticipantSelected} />
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" onClick={openAdd} className="btn">
+                    <UserPlus size={18} />
+                    {t('participants.addParticipant')}
+                  </button>
+                  <MeetingControls />
+                </div>
               </div>
-            </div>
-          </div>
-        ) : meetingState.isFinished ? (
-          /* Post Meeting Layout - Show Summary */
-          <MeetingSummary />
-        ) : (
-          /* Pre/Post Meeting Layout */
-          <div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              {/* Left Column - Participant Management */}
-              <div className="space-y-6">
-                <ParticipantForm />
-                <ParticipantTable />
-              </div>
-
-              {/* Right Column - Meeting Flow */}
-              <div className="space-y-6">
-                <div className="bg-surface rounded-lg shadow-md">
-                  <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                      <Users size={24} className="text-primary" />
-                      {t('participants.participantSelection')}
-                    </h2>
+              <div className={`${ROW} lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]`}>
+                <ParticipantTable onAdd={openAdd} />
+                <div className="card flex flex-col gap-4 p-5 sm:p-6 lg:h-full lg:min-h-0">
+                  <div>
+                    <p className="eyebrow">{t('picker.previewEyebrow')}</p>
+                    <h2 className="mt-1 text-xl font-semibold tracking-tight">{t('picker.previewTitle')}</h2>
                   </div>
-                  {meetingState.isFinished ? (
-                    <div className="p-8 text-center">
-                      <Users size={64} className="text-foreground-muted mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-foreground mb-2">
-                        {t('meeting.meetingFinished')}
-                      </h3>
-                      <p className="text-foreground-muted">
-                        {t('meeting.meetingFinishedDescription')}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="p-8">
-                      <div className="text-center mb-6">
-                        <h3 className="text-lg font-semibold text-foreground mb-2">
-                          {t('meeting.wheelPreview')}
-                        </h3>
-                        <p className="text-foreground-muted text-sm">
-                          {t('meeting.wheelPreviewDescription')}
-                        </p>
-                      </div>
-                      <SimpleSpinWheel onParticipantSelected={() => {}} />
-                      {!meetingState.isStarted && (
-                        <div className="mt-6">
-                          <MeetingControls />
-                        </div>
-                      )}
+                  <div className="lg:min-h-0 lg:flex-1">
+                    <ParticipantPicker onParticipantSelected={() => undefined} />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {view === 'live' && (
+            <motion.div key="live" {...enter} className={VIEW}>
+              <div className="card flex flex-wrap items-center justify-between gap-4 !rounded-[20px] px-4 py-3 sm:px-6">
+                <div className="flex flex-wrap items-center gap-6">
+                  <GlobalTimer />
+                  {meetingState.name && (
+                    <div className="hidden border-l border-border pl-6 sm:block">
+                      <p className="eyebrow">{t('meeting.current')}</p>
+                      <p className="font-medium">{meetingState.name}</p>
                     </div>
                   )}
                 </div>
+                <MeetingControls />
               </div>
-            </div>
+              <div className={`${ROW} lg:grid-cols-5`}>
+                <div className="card p-4 sm:p-5 lg:col-span-3 lg:h-full lg:min-h-0">
+                  <ParticipantPicker onParticipantSelected={handleParticipantSelected} />
+                </div>
+                <div className="lg:col-span-2 lg:h-full lg:min-h-0">
+                  <LiveStats />
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-            {/* Meeting Controls moved to top when meeting is finished */}
-          </div>
-        )}
+          {view === 'summary' && (
+            <motion.div key="summary" {...enter} className={VIEW}>
+              <MeetingSummary />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
 
-        {/* Modals */}
-        {selectedParticipant && (
-          <SpeakingModal
-            isOpen={true}
-            participantId={selectedParticipant}
-            onClose={handleCloseSpeakingModal}
-            onNext={handleNextParticipant}
-          />
-        )}
-
-        {/* Summary is now shown directly in page, no modal needed */}
-      </div>
-
-      {/* Floating Media Player */}
-      <FloatingMediaPlayer />
+      <AddParticipantModal open={addOpen && view === 'setup'} onClose={closeAdd} />
+      {selectedParticipant && (
+        <SpeakingModal isOpen participantId={selectedParticipant} onClose={handleCloseSpeakingModal} />
+      )}
     </div>
   );
 }

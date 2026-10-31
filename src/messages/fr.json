@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Daily Scrum Time Management",
-    "description": "Organisez efficacement le temps de parole de vos participants lors des réunions"
+    "description": "Organisez le temps de parole de chacun et gardez vos daily courtes.",
+    "shortTitle": "Daily Scrum"
   },
   "navigation": {
     "history": "Historique",
@@ -14,38 +15,65 @@
     "newMeeting": "Nouvelle réunion",
     "meetingFinished": "Réunion terminée !",
     "meetingFinishedDescription": "Consultez le résumé ou démarrez une nouvelle réunion.",
-    "wheelPreview": "Aperçu de la roue",
-    "wheelPreviewDescription": "Marquez les participants comme présents pour voir qui participera à la réunion.",
     "noParticipantsPresent": "Aucun participant présent",
     "noParticipantsPresentDescription": "Marquez des participants comme présents pour utiliser la roue.",
     "allParticipantsSpoken": "Tous les participants ont parlé !",
-    "allParticipantsSpokenDescription": "Vous pouvez finir la réunion."
+    "allParticipantsSpokenDescription": "Vous pouvez finir la réunion.",
+    "duration": "Durée de la réunion",
+    "current": "Réunion en cours",
+    "startHint": "Cochez au moins une personne présente"
   },
   "participants": {
     "addParticipant": "Ajouter un participant",
     "name": "Nom",
-    "namePlaceholder": "Nom du participant",
-    "allocatedTime": "Temps alloué (mm:ss)",
-    "allocatedTimeLabel": "Temps alloué (minutes)",
-    "actions": "Actions",
-    "present": "Présent",
-    "absent": "Absent",
-    "participants": "Participants",
-    "participantSelection": "Sélection des participants",
-    "whosTurn": "À qui le tour ?",
-    "selecting": "Sélection en cours...",
-    "remaining": "restant",
-    "remainingPlural": "restants",
-    "add": "Ajouter"
+    "namePlaceholder": "Prénom du participant",
+    "allocatedTime": "Temps (mm:ss)",
+    "add": "Ajouter",
+    "eyebrow": "Équipe",
+    "chooseAvatar": "Avatar",
+    "errors": {
+      "nameRequired": "Entrez un nom.",
+      "timeFormat": "Temps au format mm:ss, par exemple 02:00."
+    },
+    "listTitle": "Participants",
+    "presentCount": "{present} présents sur {total}",
+    "empty": "Personne pour l’instant",
+    "emptyBody": "Ajoutez les membres de l’équipe avec leur temps de parole.",
+    "markPresent": "Présent : {name}",
+    "changeAvatar": "Changer l’avatar de {name}",
+    "edit": "Modifier {name}",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer {name}",
+    "addShort": "Ajouter",
+    "added": "{name} a rejoint l’équipe",
+    "done": "Terminé",
+    "close": "Fermer",
+    "animals": {
+      "fox": "Renard",
+      "cat": "Chat",
+      "panda": "Panda",
+      "bear": "Ours",
+      "rabbit": "Lapin",
+      "koala": "Koala",
+      "owl": "Hibou",
+      "penguin": "Manchot",
+      "tiger": "Tigre",
+      "raccoon": "Raton laveur",
+      "lemur": "Lémurien",
+      "lion": "Lion"
+    }
   },
   "timer": {
     "allocatedTime": "Temps alloué",
-    "readyToStart": "Prêt à commencer",
     "timeRemaining": "Temps restant",
-    "overtime": "Temps dépassé de",
     "start": "Commencer",
     "finish": "Terminer",
-    "close": "Fermer"
+    "close": "Fermer",
+    "thanks": "Merci {name}",
+    "usedOf": "{used} sur {allocated}",
+    "overtimeLabel": "Dépassement",
+    "ofAllocated": "sur {allocated}"
   },
   "history": {
     "title": "Historique des réunions",
@@ -108,11 +136,17 @@
     "usedTime": "Temps utilisé",
     "difference": "Différence",
     "status": "Statut",
-    "didNotSpeak": "N'a pas parlé",
+    "didNotSpeak": "N’a pas parlé",
     "overtime": "Dépassement",
     "respected": "Respecté",
     "startTime": "Début",
-    "endTime": "Fin"
+    "endTime": "Fin",
+    "eyebrow": "Réunion terminée",
+    "title": "Bravo l’équipe",
+    "totalDuration": "Durée totale",
+    "participants": "Participants",
+    "timeUsedOfAllocated": "Temps utilisé",
+    "overtimes": "Dépassements"
   },
   "stats": {
     "totalDuration": "Durée totale",
@@ -122,34 +156,70 @@
   },
   "language": {
     "french": "Français",
-    "english": "English"
-  },
-  "media": {
-    "openMusicPlayer": "Ouvrir le lecteur musical",
-    "music": "Musique",
-    "file": "Fichier",
-    "url": "URL",
-    "add": "Ajouter",
-    "minimize": "Réduire",
-    "close": "Fermer",
-    "uploadAudioVideo": "Télécharger fichier Audio/Vidéo",
-    "addMusicUrl": "Ajouter URL musicale",
-    "youtubeAudioUrl": "URL YouTube ou audio...",
-    "youtubeVideoPlayer": "Lecteur vidéo YouTube",
-    "closeVideo": "Fermer la vidéo",
-    "uploadFiles": "Téléchargez audio/vidéo ou collez URL YouTube"
+    "english": "English",
+    "label": "Langue"
   },
   "liveStats": {
-    "title": "Statistiques en temps réel",
-    "presentParticipants": "Participants présents",
+    "title": "Avancement",
+    "presentParticipants": "Présents",
     "haveSpoken": "Ont parlé",
     "timeUsed": "Temps utilisé",
     "overtimes": "Dépassements",
-    "meetingProgress": "Progression de la réunion",
-    "totalAllocatedTime": "Temps total alloué",
-    "elapsedTime": "Temps écoulé",
+    "meetingProgress": "Progression",
+    "totalAllocatedTime": "Alloué",
+    "elapsedTime": "Écoulé",
     "participantsStatus": "État des participants",
-    "haveSpokenList": "✅ Ont parlé",
-    "waiting": "⏳ En attente"
+    "haveSpokenList": "Ont parlé",
+    "waiting": "En attente",
+    "eyebrow": "Suivi en direct",
+    "onAir": "Au micro"
+  },
+  "home": {
+    "eyebrow": "Préparation de la réunion",
+    "titleStart": "Qui prend la parole",
+    "titleAccent": "aujourd’hui ?"
+  },
+  "header": {
+    "palette": "Couleur d’accent",
+    "palettes": {
+      "blue": "Indigo nuit",
+      "indigo": "Indigo",
+      "purple": "Violet",
+      "rose": "Rose",
+      "red": "Corail",
+      "orange": "Ambre",
+      "green": "Menthe",
+      "emerald": "Émeraude",
+      "teal": "Lagon",
+      "slate": "Ardoise"
+    },
+    "soundOn": "Couper le son",
+    "soundOff": "Activer le son",
+    "install": "Installer l’app",
+    "installIosTitle": "Installer sur iPhone ou iPad",
+    "installIosBody": "Touchez Partager, puis « Sur l’écran d’accueil »."
+  },
+  "picker": {
+    "modeLabel": "Animation de tirage",
+    "modes": {
+      "random": "Aléatoire",
+      "wheel": "Roue",
+      "reel": "Carrousel",
+      "deck": "Cartes",
+      "spotlight": "Projecteur"
+    },
+    "present": "{count, plural, =0 {Aucun présent} one {# présent} other {# présents}}",
+    "remaining": "{count, plural, =0 {Plus personne en attente} one {# en attente} other {# en attente}}",
+    "noneTitle": "Aucun participant présent",
+    "noneBody": "Ajoutez des participants et cochez ceux qui sont présents.",
+    "allSpokenTitle": "Tout le monde a parlé",
+    "allSpokenBody": "Vous pouvez finir la réunion.",
+    "itsTurn": "Au tour de",
+    "selecting": "Tirage…",
+    "openingTimer": "Ouverture du chrono…",
+    "whosTurn": "Au tour de qui ?",
+    "previewEyebrow": "Aperçu",
+    "previewTitle": "Le tirage au sort",
+    "previewBody": "Choisissez une animation ou laissez « Aléatoire » en changer à chaque tour."
   }
 }
